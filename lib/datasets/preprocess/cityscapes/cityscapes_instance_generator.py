@@ -126,6 +126,4 @@ if __name__ == "__main__":
     cityscapes_generator = CityscapesInstanceGenerator(args)
     cityscapes_generator.generate_instance()
 
-# /root/miniconda3/bin/python cityscapes_instance_generator.py --coarse True \
-# --save_dir /msravcshare/dataset/cityscapes/ --ori_root_dir \
-# /msravcshare/yuyua/code/segmentation/deeplab_v3/dataset/cityscapes/
+# python lib/datasets/preprocess/cityscapes/cityscapes_instance_generator.py --coarse True --save_dir ../../input/cityscapes_conseg/cityscapes --ori_root_dir ../../input/cityscapes

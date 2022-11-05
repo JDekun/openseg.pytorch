@@ -21,5 +21,5 @@ PYTHON=/home/zk/anaconda3/bin/python
 #             ...
 #     pascal_context/
 #     ...
-DATA_ROOT=../../input/cityscapes_conseg
+DATA_ROOT=../../input
 

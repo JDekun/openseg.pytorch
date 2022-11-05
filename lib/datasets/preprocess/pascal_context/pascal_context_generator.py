@@ -84,3 +84,5 @@ if __name__ == "__main__":
 
     pcontext_generator = PContextGenerator(args)
     pcontext_generator.generate_label()
+
+# python lib/datasets/preprocess/pascal_context/pascal_context_generator.py --save_dir ../../input/openseg_pascal_voc_context --ori_root_dir ../../input/pascal/VOCdevkit/VOC2012

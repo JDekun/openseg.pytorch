@@ -63,3 +63,5 @@ if __name__ == '__main__':
 
     coco = COCOProcessor()
     mpp.Pool(processes=None).map(process, input_args())
+
+# python lib/datasets/preprocess/coco_stuff/coco_stuff_generator.py --ori_root_dir ../../input/cocostuff-10k-v1.1/ --save_dir ../../input/pascal_cocostuff-10k-v1.1
