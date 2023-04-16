@@ -82,5 +82,5 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    pcontext_generator = PContextGenerator(args)
+    pcontext_generator = PascalVOCGenerator(args)
     pcontext_generator.generate_label()
