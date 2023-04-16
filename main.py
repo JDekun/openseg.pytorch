@@ -26,6 +26,8 @@ import torch.backends.cudnn as cudnn
 from lib.utils.tools.logger import Logger as Log
 from lib.utils.tools.configer import Configer
 
+# 远程调试
+# import debugpy; debugpy.connect(('10.59.139.1', 5678))
 
 def str2bool(v):
     """Usage:
