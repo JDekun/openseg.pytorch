@@ -7,7 +7,7 @@ cd ../../../
 nvidia-smi
 export PYTHONPATH="$PWD":$PYTHONPATH
 
-DATA_DIR="${DATA_ROOT}/cityscapes"
+DATA_DIR="${DATA_ROOT}/openseg_cityscapes_coarse"
 SAVE_DIR="${DATA_ROOT}/seg_result/cityscapes/"
 BACKBONE="hrnet48"
 

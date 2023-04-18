@@ -2,13 +2,13 @@
 SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 cd $SCRIPTPATH
 cd ../../../
-. config.profile
+# . config.profile
 # check the enviroment info
 nvidia-smi
 export PYTHONPATH="$PWD":$PYTHONPATH
 
-DATA_DIR="${DATA_ROOT}/cityscapes"
-SAVE_DIR="${DATA_ROOT}/seg_result/cityscapes/"
+DATA_DIR="../../input/openseg-cityscapes-gtfine"
+SAVE_DIR="./seg_result/cityscapes/"
 BACKBONE="deepbase_resnet101_dilated8"
 
 CONFIGS="configs/cityscapes/R_101_D_8.json"
@@ -21,7 +21,7 @@ LOG_FILE="./log/cityscapes/${CHECKPOINTS_NAME}.log"
 echo "Logging to $LOG_FILE"
 mkdir -p `dirname $LOG_FILE`
 
-PRETRAINED_MODEL="./pretrained_model/resnet101-imagenet.pth"
+PRETRAINED_MODEL="../../input/pre-trained/resnet101-imagenet.pth"
 MAX_ITERS=40000
 
 if [ "$1"x == "train"x ]; then
@@ -33,7 +33,7 @@ if [ "$1"x == "train"x ]; then
                        --log_to_file n \
                        --backbone ${BACKBONE} \
                        --model_name ${MODEL_NAME} \
-                       --gpu 0 1 2 3 \
+                       --gpu 0 1 \
                        --data_dir ${DATA_DIR} \
                        --loss_type ${LOSS_TYPE} \
                        --max_iters ${MAX_ITERS} \
