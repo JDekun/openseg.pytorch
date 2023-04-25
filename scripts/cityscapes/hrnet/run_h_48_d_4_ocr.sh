@@ -35,7 +35,7 @@ if [ "$1"x == "train"x ]; then
                        --backbone ${BACKBONE} \
                        --model_name ${MODEL_NAME} \
                        --gpu 0 1\
-                       --workers 8\
+                       --workers 2\
                        --train_batch_size 16\
                        --val_batch_size 8\
                        --data_dir ${DATA_DIR} \
