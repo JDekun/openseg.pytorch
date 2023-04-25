@@ -123,16 +123,16 @@ class SpatialOCRNetDC(nn.Module):
 
         for lay in self.projector:
             if lay == 'layer_4':
-                proj_layer4 = F.normalize(self.projector_layer4(x_[3]), dim=1)
+                proj_layer4 = F.normalize(self.projector_layer4(x_[-1]), dim=1)
                 layer['layer_4'] = proj_layer4
             elif lay == 'layer_3':
-                proj_layer3 = F.normalize(self.projector_layer3(x_[2]), dim=1)
+                proj_layer3 = F.normalize(self.projector_layer3(x_[-2]), dim=1)
                 layer['layer_3'] = proj_layer3
             elif lay == 'layer_2':
-                proj_layer2 = F.normalize(self.projector_layer2(x_[1]), dim=1)
+                proj_layer2 = F.normalize(self.projector_layer2(x_[-3]), dim=1)
                 layer['layer_2'] = proj_layer2
             elif lay == 'layer_1':
-                proj_layer1 = F.normalize(self.projector_layer1(x_[0]), dim=1)
+                proj_layer1 = F.normalize(self.projector_layer1(x_[-4]), dim=1)
                 layer['layer_1'] = proj_layer1
 
         output["proj"] = layer
