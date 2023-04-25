@@ -254,6 +254,8 @@ class FSAuxCELossDC(nn.Module):
         aux_out, seg_out, proj = inputs
         seg_loss = self.ce_loss(seg_out, targets)
         aux_loss = self.ce_loss(aux_out, targets)
+
+        print(targets.shape)
         
         cls_score = seg_out
         decode = proj['decode']

@@ -434,6 +434,30 @@ if __name__ == "__main__":
         dest="test:save_prob",
         help="Save the logits map during testing.",
     )
+    parser.add_argument(
+        "--proj_dim",
+        type=int,
+        nargs="+",
+        default=128,
+        dest="contrast:proj_dim",
+        help="contrast:proj_dim.",
+    )
+    parser.add_argument(
+        "--projector",
+        type=str,
+        nargs="+",
+        default=None,
+        dest="contrast:projector",
+        help="contrast:proj_dim.",
+    )
+    parser.add_argument(
+        "--loss_weights",
+        type=float,
+        nargs="+",
+        default=None,
+        dest="contrast:loss_weights",
+        help="contrast:proj_dim.",
+    )
 
     # ***********  Params for env.  **********
     parser.add_argument("--seed", default=304, type=int, help="manual seed")
