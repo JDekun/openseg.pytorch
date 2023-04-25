@@ -4,8 +4,8 @@ cd $SCRIPTPATH
 cd ../../../
 # . config.profile
 # check the enviroment info
-nvidia-smi
-export PYTHONPATH="$PWD":$PYTHONPATH
+# nvidia-smi
+# export PYTHONPATH="$PWD":$PYTHONPATH
 
 DATA_DIR="../../input/openseg-cityscapes-gtfine"
 SAVE_DIR="./seg_result/cityscapes/"
@@ -21,11 +21,11 @@ LOG_FILE="./log/cityscapes/${CHECKPOINTS_NAME}.log"
 echo "Logging to $LOG_FILE"
 mkdir -p `dirname $LOG_FILE`
 
-PRETRAINED_MODEL="../../input/pre-trained/resnet101-imagenet.pth"
+PRETRAINED_MODEL="../../input/pre-trained/resnet101-imagenet-openseg.pth"
 MAX_ITERS=40000
 
 if [ "$1"x == "train"x ]; then
-  ${PYTHON} -u main.py --configs ${CONFIGS} \
+  python -u main.py --configs ${CONFIGS} \
                        --drop_last y \
                        --phase train \
                        --gathered n \
@@ -33,7 +33,7 @@ if [ "$1"x == "train"x ]; then
                        --log_to_file n \
                        --backbone ${BACKBONE} \
                        --model_name ${MODEL_NAME} \
-                       --gpu 0 1 \
+                       --gpu 2 3 4 5 \
                        --data_dir ${DATA_DIR} \
                        --loss_type ${LOSS_TYPE} \
                        --max_iters ${MAX_ITERS} \

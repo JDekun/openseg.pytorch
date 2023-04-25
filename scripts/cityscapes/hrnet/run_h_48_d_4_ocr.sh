@@ -2,12 +2,12 @@
 SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 cd $SCRIPTPATH
 cd ../../../
-. config.profile
+# . config.profile
 # check the enviroment info
-nvidia-smi
+# nvidia-smi
 export PYTHONPATH="$PWD":$PYTHONPATH
 
-DATA_DIR="${DATA_ROOT}/openseg_cityscapes"
+DATA_DIR="../../input/openseg-cityscapes-gtfine"
 SAVE_DIR="./seg_result/cityscapes/"
 BACKBONE="hrnet48"
 
@@ -21,12 +21,12 @@ LOG_FILE="./log/cityscapes/${CHECKPOINTS_NAME}.log"
 echo "Logging to $LOG_FILE"
 mkdir -p `dirname $LOG_FILE`
 
-PRETRAINED_MODEL="./pretrained_model/hrnetv2_w48_imagenet_pretrained.pth"
+PRETRAINED_MODEL="../../input/pre-trained/hrnetv2_w48_imagenet_pretrained.pth"
 MAX_ITERS=40000
 BASE_LR=0.02
 
 if [ "$1"x == "train"x ]; then
-  ${PYTHON} -u main.py --configs ${CONFIGS} \
+  python -u main.py --configs ${CONFIGS} \
                        --drop_last y \
                        --phase train \
                        --gathered n \
@@ -34,8 +34,8 @@ if [ "$1"x == "train"x ]; then
                        --log_to_file n \
                        --backbone ${BACKBONE} \
                        --model_name ${MODEL_NAME} \
-                       --gpu 3 4 5 6\
-                       --train_batch_size 16\
+                       --gpu 0 1\
+                       --train_batch_size 8\
                        --val_batch_size 8\
                        --data_dir ${DATA_DIR} \
                        --loss_type ${LOSS_TYPE} \
@@ -43,6 +43,9 @@ if [ "$1"x == "train"x ]; then
                        --checkpoints_name ${CHECKPOINTS_NAME} \
                        --pretrained ${PRETRAINED_MODEL} \
                        --distributed \
+                       --workers 4\
+                       --train_batch_size 8\
+                       --val_batch_size 4\
                        --base_lr ${BASE_LR} \
                        2>&1 | tee ${LOG_FILE}
                        
