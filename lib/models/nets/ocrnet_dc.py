@@ -108,9 +108,9 @@ class SpatialOCRNetDC(nn.Module):
 
 
     def forward(self, x_):
-        x = self.backbone(x_)
-        x_dsn = self.dsn_head(x[-2])
-        x = self.conv_3x3(x[-1])
+        bk = self.backbone(x_)
+        x_dsn = self.dsn_head(bk[-2])
+        x = self.conv_3x3(bk[-1])
         context = self.spatial_context_head(x, x_dsn)
         x = self.spatial_ocr_head(x, context)
 
@@ -123,16 +123,16 @@ class SpatialOCRNetDC(nn.Module):
 
         for lay in self.projector:
             if lay == 'layer_4':
-                proj_layer4 = F.normalize(self.projector_layer4(x[-1]), dim=1)
+                proj_layer4 = F.normalize(self.projector_layer4(bk[-1]), dim=1)
                 layer['layer_4'] = proj_layer4
             elif lay == 'layer_3':
-                proj_layer3 = F.normalize(self.projector_layer3(x[-2]), dim=1)
+                proj_layer3 = F.normalize(self.projector_layer3(bk[-2]), dim=1)
                 layer['layer_3'] = proj_layer3
             elif lay == 'layer_2':
-                proj_layer2 = F.normalize(self.projector_layer2(x[-3]), dim=1)
+                proj_layer2 = F.normalize(self.projector_layer2(bk[-3]), dim=1)
                 layer['layer_2'] = proj_layer2
             elif lay == 'layer_1':
-                proj_layer1 = F.normalize(self.projector_layer1(x[-4]), dim=1)
+                proj_layer1 = F.normalize(self.projector_layer1(bk[-4]), dim=1)
                 layer['layer_1'] = proj_layer1
 
         output["proj"] = layer
