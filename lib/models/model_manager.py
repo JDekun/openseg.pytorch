@@ -21,6 +21,7 @@ from lib.models.nets.fcnet import FcnNet
 
 # OCR
 from lib.models.nets.ocrnet import SpatialOCRNet, ASPOCRNet
+from lib.models.nets.ocrnet_dc import SpatialOCRNetDC
 from lib.models.nets.ideal_ocrnet import (
     IdealSpatialOCRNet,
     IdealSpatialOCRNetB,
@@ -57,6 +58,7 @@ SEG_MODEL_DICT = {
     "isanet": ISANet,
     # OCR series
     "spatial_ocrnet": SpatialOCRNet,
+    "spatial_ocrnet_dc": SpatialOCRNetDC,
     "spatial_asp_ocrnet": ASPOCRNet,
     # OCR series with ground-truth
     "ideal_spatial_ocrnet": IdealSpatialOCRNet,
