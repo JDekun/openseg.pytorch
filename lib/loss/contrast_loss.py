@@ -220,13 +220,14 @@ def CONTRAST_Loss(cls_score,
     
     feats = decode
     feats_y = layer
-    print('cls_score:', cls_score.shape)
 
     h, w = feats.shape[2], feats.shape[3]
     pred = torch.nn.functional.interpolate(input=cls_score, size=(h, w), mode='bilinear', align_corners=False)
     _, predict = torch.max(pred, 1)
 
+    print('labels0:', labels.shape)
     labels = labels.unsqueeze(1).float().clone()
+    print('labels1:', labels.shape)
     labels = torch.nn.functional.interpolate(labels, (h, w), mode='nearest')
     labels = labels.squeeze(1).long()
     assert labels.shape[-1] == feats.shape[-1], '{} {}'.format(labels.shape, feats.shape)
