@@ -35,6 +35,7 @@ if [ "$1"x == "train"x ]; then
                        --backbone ${BACKBONE} \
                        --model_name ${MODEL_NAME} \
                        --gpu 0 1\
+                       --workers 8\
                        --train_batch_size 16\
                        --val_batch_size 8\
                        --data_dir ${DATA_DIR} \
@@ -43,7 +44,6 @@ if [ "$1"x == "train"x ]; then
                        --checkpoints_name ${CHECKPOINTS_NAME} \
                        --pretrained ${PRETRAINED_MODEL} \
                        --distributed \
-                       --workers 0\
                        --base_lr ${BASE_LR} \
                        2>&1 | tee ${LOG_FILE}
                        
