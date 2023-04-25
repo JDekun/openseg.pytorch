@@ -83,19 +83,20 @@ class StandardEvaluator(_BaseEvaluator):
 
             outputs_numpy = {}
             for name, idx in self.output_indices.items():
-                item = outputs[idx].permute(0, 2, 3, 1)
-                if self.configer.get('dataset') == 'celeba':
-                    # the celeba image is of size 1024x1024
-                    item = cv2.resize(
-                        item[i, :border_size[1], :border_size[0]].cpu().numpy(),
-                        tuple(x // 2 for x in ori_img_size), interpolation=cv2.INTER_CUBIC
-                    )
-                else:
-                    item = cv2.resize(
-                        item[i, :border_size[1], :border_size[0]].cpu().numpy(),
-                        tuple(ori_img_size), interpolation=cv2.INTER_CUBIC
-                    )
-                outputs_numpy[name] = item
+                if not isinstance(outputs[idx],dict):
+                    item = outputs[idx].permute(0, 2, 3, 1)
+                    if self.configer.get('dataset') == 'celeba':
+                        # the celeba image is of size 1024x1024
+                        item = cv2.resize(
+                            item[i, :border_size[1], :border_size[0]].cpu().numpy(),
+                            tuple(x // 2 for x in ori_img_size), interpolation=cv2.INTER_CUBIC
+                        )
+                    else:
+                        item = cv2.resize(
+                            item[i, :border_size[1], :border_size[0]].cpu().numpy(),
+                            tuple(ori_img_size), interpolation=cv2.INTER_CUBIC
+                        )
+                    outputs_numpy[name] = item
 
             for name in outputs_numpy:
                 tasks.task_mapping[name].eval(
