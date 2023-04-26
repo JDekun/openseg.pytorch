@@ -76,8 +76,9 @@ class StandardEvaluator(_BaseEvaluator):
         if isinstance(outputs, torch.Tensor):
             outputs = [outputs]
         
-        print('type',type(outputs))
-        print('len',len(outputs))
+        print('type0',type(outputs[0]))
+        print('type1',type(outputs[1]))
+        print('type2',type(outputs[2]))
 
         for i in range(len(outputs[0])):
 
