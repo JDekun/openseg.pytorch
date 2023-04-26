@@ -73,13 +73,9 @@ class StandardEvaluator(_BaseEvaluator):
             self.save_net_metric = metric
 
     def update_score(self, outputs, metas):
-        print('be outputs',outputs)
         if isinstance(outputs, torch.Tensor):
             outputs = [outputs]
             print('hello')
-
-        print('af outputs',outputs)
-        print('outputs[0]',outputs[0])
             
         for i in range(len(outputs[0])):
 
