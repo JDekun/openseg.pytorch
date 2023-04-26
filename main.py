@@ -448,7 +448,7 @@ if __name__ == "__main__":
         nargs="+",
         default=None,
         dest="contrast:projector",
-        help="contrast:proj_dim.",
+        help="contrast:projector.",
     )
     parser.add_argument(
         "--loss_weights",
@@ -456,7 +456,7 @@ if __name__ == "__main__":
         nargs="+",
         default=None,
         dest="contrast:loss_weights",
-        help="contrast:proj_dim.",
+        help="contrast:loss_weights.",
     )
 
     # ***********  Params for env.  **********
