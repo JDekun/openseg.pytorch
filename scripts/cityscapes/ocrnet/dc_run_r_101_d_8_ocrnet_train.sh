@@ -10,8 +10,8 @@ cd ../../../
 
 # export PYTHONPATH="$PWD":$PYTHONPATH
 
-DATA_DIR="${DATA_ROOT}/cityscapes"
-SAVE_DIR="${DATA_ROOT}/seg_result/cityscapes/"
+DATA_DIR="../../input/openseg-cityscapes-gtfine"
+SAVE_DIR="./result/cityscapes/checkpoints/"
 BACKBONE="deepbase_resnet101_dilated8"
 
 CONFIGS="configs/cityscapes/DC_R_101_D_8.json"
@@ -19,12 +19,12 @@ CONFIGS_TEST="configs/cityscapes/R_101_D_8_TEST.json"
 
 MODEL_NAME="spatial_ocrnet_dc"
 LOSS_TYPE="fs_auxce_loss_dc"
-CHECKPOINTS_NAME="${MODEL_NAME}_${BACKBONE}_$(date +%F_%H-%M-%S)"
+CHECKPOINTS_NAME="dc_${MODEL_NAME}_${BACKBONE}_$(date +%F_%H-%M-%S)"
 LOG_FILE="./log/cityscapes/${CHECKPOINTS_NAME}.log"
 echo "Logging to $LOG_FILE"
 mkdir -p `dirname $LOG_FILE`
 
-PRETRAINED_MODEL="./pretrained_model/resnet101-imagenet.pth"
+PRETRAINED_MODEL="../../input/pre-trained/resnet101-imagenet-openseg.pth"
 MAX_ITERS=40000
 
 
@@ -37,7 +37,10 @@ if [ "$1"x == "train"x ]; then
                        --log_to_file n \
                        --backbone ${BACKBONE} \
                        --model_name ${MODEL_NAME} \
-                       --gpu 0 1 2 3 \
+                       --workers 4\
+                       --gpu 2 3 4 6 \
+                       --train_batch_size 8\
+                       --val_batch_size 4 \
                        --data_dir ${DATA_DIR} \
                        --loss_type ${LOSS_TYPE} \
                        --max_iters ${MAX_ITERS} \

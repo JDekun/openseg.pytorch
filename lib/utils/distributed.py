@@ -50,6 +50,7 @@ def handle_distributed(args, main_file):
     command_args = [
         python_exec, '-u',
         '-m', 'torch.distributed.launch',
+        '--master_port=1234',
         '--nproc_per_node', str(world_size),
         main_file,
     ] + command_args
