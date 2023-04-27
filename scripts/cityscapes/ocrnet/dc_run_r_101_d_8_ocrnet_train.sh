@@ -51,7 +51,7 @@ if [ "$1"x == "train"x ]; then
                        
 
 elif [ "$1"x == "resume"x ]; then
-  ${PYTHON} -u main.py --configs ${CONFIGS} \
+  python -u main.py --configs ${CONFIGS} \
                        --drop_last y \
                        --phase train \
                        --gathered n \

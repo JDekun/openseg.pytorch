@@ -2,26 +2,29 @@
 SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 cd $SCRIPTPATH
 cd ../../../
-# . config.profile
+. config.profile
 # check the enviroment info
 # nvidia-smi
-export PYTHONPATH="$PWD":$PYTHONPATH
+# ${PYTHON} -m pip install torchcontrib
+# ${PYTHON} -m pip install git+https://github.com/lucasb-eyer/pydensecrf.git
+
+# export PYTHONPATH="$PWD":$PYTHONPATH
 
 DATA_DIR="../../input/openseg-cityscapes-gtfine"
-SAVE_DIR="./seg_result/cityscapes/"
-BACKBONE="hrnet48"
+SAVE_DIR="./result/cityscapes/checkpoints/"
+BACKBONE="deepbase_resnet101_dilated8"
 
-CONFIGS="configs/cityscapes/H_48_D_4.json"
-CONFIGS_TEST="configs/cityscapes/H_48_D_4_TEST.json"
+CONFIGS="configs/cityscapes/DC_R_101_D_8.json"
+CONFIGS_TEST="configs/cityscapes/R_101_D_8_TEST.json"
 
-MODEL_NAME="hrnet_w48_ocr"
-LOSS_TYPE="fs_auxce_loss"
-CHECKPOINTS_NAME="${MODEL_NAME}_lr2x_$(date +%F_%H-%M-%S)"
+MODEL_NAME="spatial_ocrnet_dc"
+LOSS_TYPE="fs_auxce_loss_dc"
+CHECKPOINTS_NAME="dc_${MODEL_NAME}_${BACKBONE}_lr2x_$(date +%F_%H-%M-%S)"
 LOG_FILE="./log/cityscapes/${CHECKPOINTS_NAME}.log"
 echo "Logging to $LOG_FILE"
 mkdir -p `dirname $LOG_FILE`
 
-PRETRAINED_MODEL="../../input/pre-trained/hrnetv2_w48_imagenet_pretrained.pth"
+PRETRAINED_MODEL="../../input/pre-trained/resnet101-imagenet-openseg.pth"
 MAX_ITERS=40000
 BASE_LR=0.02
 
@@ -34,17 +37,17 @@ if [ "$1"x == "train"x ]; then
                        --log_to_file n \
                        --backbone ${BACKBONE} \
                        --model_name ${MODEL_NAME} \
-                       --gpu 2 3 4 6\
                        --workers 4\
-                       --train_batch_size 16\
-                       --val_batch_size 8\
+                       --gpu 2 3 4 6 \
+                       --train_batch_size 8\
+                       --val_batch_size 4 \
                        --data_dir ${DATA_DIR} \
                        --loss_type ${LOSS_TYPE} \
                        --max_iters ${MAX_ITERS} \
                        --checkpoints_name ${CHECKPOINTS_NAME} \
                        --pretrained ${PRETRAINED_MODEL} \
-                       --distributed \
                        --base_lr ${BASE_LR} \
+                       --distributed \
                        2>&1 | tee ${LOG_FILE}
                        
 
@@ -66,13 +69,13 @@ elif [ "$1"x == "resume"x ]; then
                        --checkpoints_name ${CHECKPOINTS_NAME} \
                         2>&1 | tee -a ${LOG_FILE}
 
-
 elif [ "$1"x == "val"x ]; then
-  ${PYTHON} -u main.py --configs ${CONFIGS} --drop_last y --data_dir ${DATA_DIR} \
+  ${PYTHON} -u main.py --configs ${CONFIGS} --drop_last y \
                        --backbone ${BACKBONE} --model_name ${MODEL_NAME} --checkpoints_name ${CHECKPOINTS_NAME} \
                        --phase test --gpu 0 1 2 3 --resume ./checkpoints/cityscapes/${CHECKPOINTS_NAME}_latest.pth \
                        --loss_type ${LOSS_TYPE} --test_dir ${DATA_DIR}/val/image \
-                       --out_dir ${SAVE_DIR}${CHECKPOINTS_NAME}_val 
+                       --out_dir ${SAVE_DIR}${CHECKPOINTS_NAME}_val --data_dir ${DATA_DIR}
+
 
   cd lib/metrics
   ${PYTHON} -u cityscapes_evaluator.py --pred_dir ${SAVE_DIR}${CHECKPOINTS_NAME}_val/label  \
@@ -111,7 +114,6 @@ elif [ "$1"x == "test"x ]; then
                          --test_dir ${DATA_DIR}/test --log_to_file n \
                          --out_dir ${SAVE_DIR}${CHECKPOINTS_NAME}_test_ms
   fi
-
 
 else
   echo "$1"x" is invalid..."
