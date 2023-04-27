@@ -18,10 +18,10 @@ from lib.models.backbones.backbone_selector import BackboneSelector
 from lib.models.tools.module_helper import ModuleHelper
 
 
-class FcnNet(nn.Module):
+class FcnNetDC(nn.Module):
     def __init__(self, configer):
         self.inplanes = 128
-        super(FcnNet, self).__init__()
+        super(FcnNetDC, self).__init__()
         self.configer = configer
         self.num_classes = self.configer.get("data", "num_classes")
         self.backbone = BackboneSelector(configer).get_backbone()

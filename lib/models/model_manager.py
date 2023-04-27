@@ -21,7 +21,6 @@ from lib.models.nets.fcnet import FcnNet
 
 # OCR
 from lib.models.nets.ocrnet import SpatialOCRNet, ASPOCRNet
-from lib.models.nets.ocrnet_dc import SpatialOCRNetDC
 from lib.models.nets.ideal_ocrnet import (
     IdealSpatialOCRNet,
     IdealSpatialOCRNetB,
@@ -46,6 +45,11 @@ from lib.models.nets.ce2pnet import CE2P_OCRNet, CE2P_IdealOCRNet, CE2P_ASPOCR
 # SegFix
 from lib.models.nets.segfix import SegFix_HRNet
 
+# dcnet
+from lib.models.nets.fcnet_dc import FcnNetDC
+
+
+
 from lib.utils.tools.logger import Logger as Log
 
 SEG_MODEL_DICT = {
@@ -58,7 +62,6 @@ SEG_MODEL_DICT = {
     "isanet": ISANet,
     # OCR series
     "spatial_ocrnet": SpatialOCRNet,
-    "spatial_ocrnet_dc": SpatialOCRNetDC,
     "spatial_asp_ocrnet": ASPOCRNet,
     # OCR series with ground-truth
     "ideal_spatial_ocrnet": IdealSpatialOCRNet,
@@ -77,6 +80,9 @@ SEG_MODEL_DICT = {
     "ce2p_ideal_ocrnet": CE2P_IdealOCRNet,
     # baseline series
     "fcnet": FcnNet,
+    # dcnet
+    "spatial_ocrnet_dc": SpatialOCRNetDC,
+    "fcnet_dc": FcnNetDC,
 }
 
 
