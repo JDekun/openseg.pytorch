@@ -47,6 +47,7 @@ from lib.models.nets.segfix import SegFix_HRNet
 
 # dcnet
 from lib.models.nets.fcnet_dc import FcnNetDC
+from lib.models.nets.ocrnet_dc import SpatialOCRNetDC
 
 
 
