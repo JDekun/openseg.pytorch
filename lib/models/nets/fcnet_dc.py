@@ -33,10 +33,12 @@ class FcnNetDC(nn.Module):
             in_channels = [160, 320]
         else:
             in_channels = [1024, 2048]
-        self.cls_head = nn.Sequential(
+        self.fcn_head = nn.Sequential(
             nn.Conv2d(in_channels[1], 512, kernel_size=3, stride=1, padding=1),
             ModuleHelper.BNReLU(512, bn_type=self.configer.get("network", "bn_type")),
             nn.Dropout2d(0.10),
+        )
+        self.cls_head = nn.Sequential(
             nn.Conv2d(
                 512, self.num_classes, kernel_size=1, stride=1, padding=0, bias=False
             ),
@@ -51,12 +53,14 @@ class FcnNetDC(nn.Module):
         )
 
         if "mobilenetv2" in self.configer.get("network", "backbone"):
-            self.cls_head = nn.Sequential(
+            self.fcn_head = nn.Sequential(
                 nn.Conv2d(in_channels[1], 256, kernel_size=3, stride=1, padding=1),
                 ModuleHelper.BNReLU(
                     256, bn_type=self.configer.get("network", "bn_type")
                 ),
                 nn.Dropout2d(0.10),
+            )
+            self.cls_head = nn.Sequential(
                 nn.Conv2d(
                     256,
                     self.num_classes,
@@ -82,17 +86,28 @@ class FcnNetDC(nn.Module):
                 ),
             )
 
+        # contrast
+        from lib.models.modules.contrast import Contrast_Module
+        self.contrast_head = Contrast_Module(configer)
+        self.relu = nn.ReLU()
+
     def forward(self, x_):
         x = self.backbone(x_)
         aux_x = self.dsn_head(x[-2])
-        x = self.cls_head(x[-1])
+
+        # contrast
+        decode = self.fcn_head(x[-1])
+        output, contrast = self.contrast_head(x, decode)
+        x =  self.relu(decode + contrast)
+        x = self.cls_head(decode)
+
         aux_x = F.interpolate(
             aux_x, size=(x_.size(2), x_.size(3)), mode="bilinear", align_corners=True
         )
         x = F.interpolate(
             x, size=(x_.size(2), x_.size(3)), mode="bilinear", align_corners=True
         )
-        return aux_x, x
+        return aux_x, x, output
 
 
 class FcnNet_wo_dsn(nn.Module):
@@ -110,7 +125,7 @@ class FcnNet_wo_dsn(nn.Module):
             in_channels = [160, 320]
         else:
             in_channels = [1024, 2048]
-        self.cls_head = nn.Sequential(
+        self.fcn_head = nn.Sequential(
             nn.Conv2d(in_channels[1], 512, kernel_size=3, stride=1, padding=1),
             ModuleHelper.BNReLU(512, bn_type=self.configer.get("network", "bn_type")),
             nn.Dropout2d(0.10),
@@ -120,7 +135,7 @@ class FcnNet_wo_dsn(nn.Module):
         )
 
         if "mobilenetv2" in self.configer.get("network", "backbone"):
-            self.cls_head = nn.Sequential(
+            self.fcn_head = nn.Sequential(
                 nn.Conv2d(in_channels[1], 256, kernel_size=3, stride=1, padding=1),
                 ModuleHelper.BNReLU(
                     256, bn_type=self.configer.get("network", "bn_type")
@@ -138,7 +153,7 @@ class FcnNet_wo_dsn(nn.Module):
 
     def forward(self, x_):
         x = self.backbone(x_)
-        x = self.cls_head(x[-1])
+        x = self.fcn_head(x[-1])
         x = F.interpolate(
             x, size=(x_.size(2), x_.size(3)), mode="bilinear", align_corners=True
         )
