@@ -31,7 +31,7 @@ if [ "$1"x == "train"x ]; then
   ${PYTHON} -u main.py --configs ${CONFIGS} \
                        --drop_last y \
                        --phase train \
-                       --include_val y
+                       --include_val y\
                        --gathered n \
                        --loss_balance y \
                        --log_to_file n \

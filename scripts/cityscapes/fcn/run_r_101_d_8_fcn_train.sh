@@ -33,7 +33,12 @@ if [ "$1"x == "train"x ]; then
                        --log_to_file n \
                        --backbone ${BACKBONE} \
                        --model_name ${MODEL_NAME} \
-                       --gpu 2 3 4 5 \
+                       --gpu 2 3 4 6 \
+                       --workers 4 \
+                       --train_batch_size 16\
+                       --val_batch_size 8 \
+                       --base_lr 0.01 \
+                       --nbb_mult 1.0\
                        --data_dir ${DATA_DIR} \
                        --loss_type ${LOSS_TYPE} \
                        --max_iters ${MAX_ITERS} \
@@ -42,7 +47,7 @@ if [ "$1"x == "train"x ]; then
                        2>&1 | tee ${LOG_FILE}
                        
 elif [ "$1"x == "resume"x ]; then
-  ${PYTHON} -u main.py --configs ${CONFIGS} \
+  python -u main.py --configs ${CONFIGS} \
                        --drop_last y \
                        --phase train \
                        --gathered n \
