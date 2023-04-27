@@ -47,6 +47,7 @@ if [ "$1"x == "train"x ]; then
                        --checkpoints_name ${CHECKPOINTS_NAME} \
                        --pretrained ${PRETRAINED_MODEL} \
                        --base_lr ${BASE_LR} \
+                       --nbb_mult 1.0\
                        --distributed \
                        2>&1 | tee ${LOG_FILE}
                        
