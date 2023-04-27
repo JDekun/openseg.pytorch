@@ -73,7 +73,7 @@ class Trainer(object):
     def _init_model(self):
         self.seg_net = self.model_manager.semantic_segmentor()
         self.seg_net = self.module_runner.load_net(self.seg_net)
-        if not is_distributed() or get_rank() == 0
+        if not is_distributed() or get_rank() == 0:
             print(self.seg_net )
 
         Log.info(
