@@ -434,6 +434,7 @@ if __name__ == "__main__":
         dest="test:save_prob",
         help="Save the logits map during testing.",
     )
+    # ***********  contrast  **********
     parser.add_argument(
         "--proj_dim",
         type=int,

@@ -55,9 +55,9 @@ class Contrast_Module(nn.Module):
             for layer in self.projector:
                 if layer == "layer_4":
                     self.projector_layer4 = nn.Sequential(
-                        nn.Conv2d(256, 256, kernel_size=1, stride=1, padding=0, bias=False),
-                        ModuleHelper.BNReLU(256, bn_type=self.configer.get("network", "bn_type")),
-                        nn.Conv2d(256, self.proj_dim, kernel_size=1, stride=1, padding=0, bias=False),
+                        nn.Conv2d(384, 384, kernel_size=1, stride=1, padding=0, bias=False),
+                        ModuleHelper.BNReLU(384, bn_type=self.configer.get("network", "bn_type")),
+                        nn.Conv2d(384, self.proj_dim, kernel_size=1, stride=1, padding=0, bias=False),
                         ModuleHelper.BNReLU(self.proj_dim, bn_type=self.configer.get("network", "bn_type")),)
                 elif layer == "layer_3":
                     self.projector_layer3 = nn.Sequential(
