@@ -277,6 +277,38 @@ class FSAuxCELossDC(nn.Module):
         )
         return loss
 
+class FSCELossDC(nn.Module):
+    def __init__(self, configer=None):
+        super(FSCELossDC, self).__init__()
+        self.configer = configer
+        self.ce_loss = FSCELoss(self.configer)
+
+    def forward(self, inputs, targets, **kwargs):
+        seg_out, proj = inputs
+        seg_loss = self.ce_loss(seg_out, targets)
+        
+        cls_score = seg_out
+        decode = proj['decode']
+        los_con = 0
+        for name, layer in proj['proj'].items():
+            index = int(name.split("_")[-1]) - 1
+            weight = self.configer.get("contrast", "loss_weights")[index]
+            con = CONTRAST_Loss(
+                cls_score,
+                decode,
+                layer,
+                targets,
+                memory_size = 0,
+                sample = 'weight_ade_8')
+            los_con = los_con + weight * con
+
+        loss = self.configer.get("network", "loss_weights")["seg_loss"] * seg_loss
+        loss = loss + los_con
+        loss = (
+            loss
+        )
+        return loss
+
 
 class FSAuxRMILoss(nn.Module):
     def __init__(self, configer=None):

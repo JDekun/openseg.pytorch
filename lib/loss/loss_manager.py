@@ -19,6 +19,7 @@ from lib.loss.loss_helper import SegFixLoss
 from lib.loss.rmi_loss import RMILoss
 
 from lib.loss.loss_dc import FSAuxCELossDC
+from lib.loss.loss_dc import FSCELossDC
 
 from lib.utils.tools.logger import Logger as Log
 from lib.utils.distributed import is_distributed
@@ -26,6 +27,7 @@ from lib.utils.distributed import is_distributed
 
 SEG_LOSS_DICT = {
     "fs_ce_loss": FSCELoss,
+    "fs_ce_loss_dc": FSCELossDC,
     "fs_ohemce_loss": FSOhemCELoss,
     "fs_auxce_loss": FSAuxCELoss,
     "fs_auxce_loss_dc": FSAuxCELossDC,

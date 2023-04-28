@@ -31,11 +31,13 @@ class HRNet_W48_DC(nn.Module):
 
         # extra added layers
         in_channels = 720  # 48 + 96 + 192 + 384
-        self.cls_head = nn.Sequential(
+        self.seg_head = nn.Sequential(
             nn.Conv2d(in_channels, in_channels, kernel_size=3, stride=1, padding=1),
             ModuleHelper.BNReLU(
                 in_channels, bn_type=self.configer.get("network", "bn_type")
             ),
+        )
+        self.cls_head = nn.Sequential(
             nn.Dropout2d(0.10),
             nn.Conv2d(
                 in_channels,
@@ -46,6 +48,9 @@ class HRNet_W48_DC(nn.Module):
                 bias=False,
             ),
         )
+        # contrast
+        from lib.models.modules.contrast import Contrast_Module
+        self.contrast_head = Contrast_Module(configer)
 
     def forward(self, x_):
         x = self.backbone(x_)
@@ -57,11 +62,18 @@ class HRNet_W48_DC(nn.Module):
         feat4 = F.interpolate(x[3], size=(h, w), mode="bilinear", align_corners=True)
 
         feats = torch.cat([feat1, feat2, feat3, feat4], 1)
+        feats = self.seg_head(feats)
+
+        # contrast
+        bk = [feat1, feat2, feat3, feat4]
+        output, feats = self.contrast_head(bk, feats)     
+        # contrast
+
         out = self.cls_head(feats)
         out = F.interpolate(
             out, size=(x_.size(2), x_.size(3)), mode="bilinear", align_corners=True
         )
-        return out
+        return out, output
 
 
 class HRNet_W48_ASPOCR(nn.Module):
