@@ -51,9 +51,37 @@ class Contrast_Module(nn.Module):
                         ModuleHelper.BNReLU(256, bn_type=self.configer.get("network", "bn_type")),
                         nn.Conv2d(256, self.proj_dim, kernel_size=1, stride=1, padding=0, bias=False),
                         ModuleHelper.BNReLU(self.proj_dim, bn_type=self.configer.get("network", "bn_type")),)
+        elif "hrnet" in self.configer.get("network", "backbone"):
+            for layer in self.projector:
+                if layer == "layer_4":
+                    self.projector_layer4 = nn.Sequential(
+                        nn.Conv2d(384, 384, kernel_size=1, stride=1, padding=0, bias=False),
+                        ModuleHelper.BNReLU(384, bn_type=self.configer.get("network", "bn_type")),
+                        nn.Conv2d(384, self.proj_dim, kernel_size=1, stride=1, padding=0, bias=False),
+                        ModuleHelper.BNReLU(self.proj_dim, bn_type=self.configer.get("network", "bn_type")),)
+                elif layer == "layer_3":
+                    self.projector_layer3 = nn.Sequential(
+                        nn.Conv2d(192, 192, kernel_size=1, stride=1, padding=0, bias=False),
+                        ModuleHelper.BNReLU(192, bn_type=self.configer.get("network", "bn_type")),
+                        nn.Conv2d(192, self.proj_dim, kernel_size=1, stride=1, padding=0, bias=False),
+                        ModuleHelper.BNReLU(self.proj_dim, bn_type=self.configer.get("network", "bn_type")),)
+                elif layer == "layer_2":
+                    self.projector_layer2 = nn.Sequential(
+                        nn.Conv2d(96, self.proj_dim, kernel_size=1, stride=1, padding=0, bias=False),
+                        ModuleHelper.BNReLU(self.proj_dim, bn_type=self.configer.get("network", "bn_type")),
+                        nn.Conv2d(self.proj_dim, self.proj_dim, kernel_size=1, stride=1, padding=0, bias=False),
+                        ModuleHelper.BNReLU(self.proj_dim, bn_type=self.configer.get("network", "bn_type")),)
+                elif layer == "layer_1":
+                    self.projector_layer1 = nn.Sequential(
+                        nn.Conv2d(48, self.proj_dim, kernel_size=1, stride=1, padding=0, bias=False),
+                        ModuleHelper.BNReLU(self.proj_dim, bn_type=self.configer.get("network", "bn_type")),
+                        nn.Conv2d(self.proj_dim, self.proj_dim, kernel_size=1, stride=1, padding=0, bias=False),
+                        ModuleHelper.BNReLU(self.proj_dim, bn_type=self.configer.get("network", "bn_type")),)
+                    
         self.de_projector = nn.Sequential(
             nn.Conv2d(self.proj_dim, 512, kernel_size=1, stride=1, padding=0, bias=False),
             ModuleHelper.BatchNorm2d(bn_type=self.configer.get("network", "bn_type"))(512),)
+        self.relu = nn.ReLU()
 
     def forward(self, bk, decode):
         output = dict()
@@ -80,5 +108,6 @@ class Contrast_Module(nn.Module):
         output["proj"] = layer
 
         contrast = self.de_projector(temp)
+        feats = self.relu(decode + contrast)
 
-        return output, contrast
+        return output, feats
