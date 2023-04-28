@@ -89,7 +89,6 @@ class FcnNetDC(nn.Module):
         # contrast
         from lib.models.modules.contrast import Contrast_Module
         self.contrast_head = Contrast_Module(configer)
-        self.relu = nn.ReLU()
 
     def forward(self, x_):
         x = self.backbone(x_)
@@ -97,9 +96,10 @@ class FcnNetDC(nn.Module):
 
         # contrast
         decode = self.fcn_head(x[-1])
-        output, contrast = self.contrast_head(x, decode)
-        x = self.relu(decode + contrast)
-        x = self.cls_head(x)
+        output, decode = self.contrast_head(x, decode)
+        # contrast
+
+        x = self.cls_head(decode)
 
         aux_x = F.interpolate(
             aux_x, size=(x_.size(2), x_.size(3)), mode="bilinear", align_corners=True

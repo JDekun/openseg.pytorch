@@ -69,42 +69,9 @@ class SpatialOCRNetDC(nn.Module):
             ),
         )
 
-        # >>> project contrast
-        self.projector_decode = nn.Sequential(
-            nn.Conv2d(512, 512, kernel_size=1, stride=1, padding=0, bias=False),
-            ModuleHelper.BNReLU(512, bn_type=self.configer.get("network", "bn_type")),
-            nn.Conv2d(512, self.proj_dim, kernel_size=1, stride=1, padding=0, bias=False),
-            ModuleHelper.BNReLU(self.proj_dim, bn_type=self.configer.get("network", "bn_type")),)
-        for layer in self.projector:
-            if layer == "layer_4":
-                self.projector_layer4 = nn.Sequential(
-                    nn.Conv2d(2048, 512, kernel_size=1, stride=1, padding=0, bias=False),
-                    ModuleHelper.BNReLU(512, bn_type=self.configer.get("network", "bn_type")),
-                    nn.Conv2d(512, self.proj_dim, kernel_size=1, stride=1, padding=0, bias=False),
-                    ModuleHelper.BNReLU(self.proj_dim, bn_type=self.configer.get("network", "bn_type")),)
-            elif layer == "layer_3":
-                self.projector_layer3 = nn.Sequential(
-                    nn.Conv2d(1024, 512, kernel_size=1, stride=1, padding=0, bias=False),
-                    ModuleHelper.BNReLU(512, bn_type=self.configer.get("network", "bn_type")),
-                    nn.Conv2d(512, self.proj_dim, kernel_size=1, stride=1, padding=0, bias=False),
-                    ModuleHelper.BNReLU(self.proj_dim, bn_type=self.configer.get("network", "bn_type")),)
-            elif layer == "layer_2":
-                self.projector_layer2 = nn.Sequential(
-                    nn.Conv2d(512, 512, kernel_size=1, stride=1, padding=0, bias=False),
-                    ModuleHelper.BNReLU(512, bn_type=self.configer.get("network", "bn_type")),
-                    nn.Conv2d(512, self.proj_dim, kernel_size=1, stride=1, padding=0, bias=False),
-                    ModuleHelper.BNReLU(self.proj_dim, bn_type=self.configer.get("network", "bn_type")),)
-            elif layer == "layer_1":
-                self.projector_layer1 = nn.Sequential(
-                    nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
-                    nn.Conv2d(256, 256, kernel_size=1, stride=1, padding=0, bias=False),
-                    ModuleHelper.BNReLU(256, bn_type=self.configer.get("network", "bn_type")),
-                    nn.Conv2d(256, self.proj_dim, kernel_size=1, stride=1, padding=0, bias=False),
-                    ModuleHelper.BNReLU(self.proj_dim, bn_type=self.configer.get("network", "bn_type")),)
-        self.de_projector = nn.Sequential(
-            nn.Conv2d(self.proj_dim, 512, kernel_size=1, stride=1, padding=0, bias=False),
-            ModuleHelper.BatchNorm2d(bn_type=self.configer.get("network", "bn_type"))(512),)
-        self.relu = nn.ReLU()
+        # contrast
+        from lib.models.modules.contrast import Contrast_Module
+        self.contrast_head = Contrast_Module(configer)
 
 
     def forward(self, x_):
@@ -114,30 +81,9 @@ class SpatialOCRNetDC(nn.Module):
         context = self.spatial_context_head(x, x_dsn)
         x = self.spatial_ocr_head(x, context)
 
-        output = dict()
-        layer = dict()
-        # >>> project contrast
-        temp = self.projector_decode(x)
-        proj_decode = F.normalize(temp, dim=1)
-        output["decode"] = proj_decode
-
-        for lay in self.projector:
-            if lay == 'layer_4':
-                proj_layer4 = F.normalize(self.projector_layer4(bk[-1]), dim=1)
-                layer['layer_4'] = proj_layer4
-            elif lay == 'layer_3':
-                proj_layer3 = F.normalize(self.projector_layer3(bk[-2]), dim=1)
-                layer['layer_3'] = proj_layer3
-            elif lay == 'layer_2':
-                proj_layer2 = F.normalize(self.projector_layer2(bk[-3]), dim=1)
-                layer['layer_2'] = proj_layer2
-            elif lay == 'layer_1':
-                proj_layer1 = F.normalize(self.projector_layer1(bk[-4]), dim=1)
-                layer['layer_1'] = proj_layer1
-
-        output["proj"] = layer
-        contrast = self.de_projector(temp)
-        x =  self.relu(x + contrast)
+        # contrast
+        output, x = self.contrast_head(bk, x)     
+        # contrast
 
         x = self.head(x)
         x_dsn = F.interpolate(
