@@ -34,7 +34,7 @@ class HRNet_W48_DC(nn.Module):
         self.seg_head = nn.Sequential(
             nn.Conv2d(in_channels, 512, kernel_size=3, stride=1, padding=1),
             ModuleHelper.BNReLU(
-                in_channels, bn_type=self.configer.get("network", "bn_type")
+                512, bn_type=self.configer.get("network", "bn_type")
             ),
         )
         self.cls_head = nn.Sequential(
