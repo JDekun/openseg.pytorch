@@ -108,6 +108,6 @@ class Contrast_Module(nn.Module):
         output["proj"] = layer
 
         contrast = self.de_projector(temp)
-        feats = self.relu(feats + contrast)
+        feats = self.relu(decode + contrast)
 
         return output, feats
