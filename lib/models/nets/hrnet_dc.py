@@ -32,7 +32,7 @@ class HRNet_W48_DC(nn.Module):
         # extra added layers
         in_channels = 720  # 48 + 96 + 192 + 384
         self.seg_head = nn.Sequential(
-            nn.Conv2d(in_channels, in_channels, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(in_channels, 512, kernel_size=3, stride=1, padding=1),
             ModuleHelper.BNReLU(
                 in_channels, bn_type=self.configer.get("network", "bn_type")
             ),
@@ -40,7 +40,7 @@ class HRNet_W48_DC(nn.Module):
         self.cls_head = nn.Sequential(
             nn.Dropout2d(0.10),
             nn.Conv2d(
-                in_channels,
+                512,
                 self.num_classes,
                 kernel_size=1,
                 stride=1,
