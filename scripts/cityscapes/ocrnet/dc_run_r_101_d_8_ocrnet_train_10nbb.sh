@@ -19,14 +19,14 @@ CONFIGS_TEST="configs/cityscapes/R_101_D_8_TEST.json"
 
 MODEL_NAME="spatial_ocrnet_dc"
 LOSS_TYPE="fs_auxce_loss_dc"
-CHECKPOINTS_NAME="dc_${MODEL_NAME}_${BACKBONE}_$(date +%F_%H-%M-%S)"
+CHECKPOINTS_NAME="dc_${MODEL_NAME}_${BACKBONE}_10nbb_$(date +%F_%H-%M-%S)"
 LOG_FILE="./log/cityscapes/${CHECKPOINTS_NAME}.log"
 echo "Logging to $LOG_FILE"
 mkdir -p `dirname $LOG_FILE`
 
 PRETRAINED_MODEL="../../input/pre-trained/resnet101-imagenet-openseg.pth"
 MAX_ITERS=40000
-
+BASE_LR=0.01
 
 if [ "$1"x == "train"x ]; then
   python -u main.py --configs ${CONFIGS} \
@@ -46,6 +46,8 @@ if [ "$1"x == "train"x ]; then
                        --max_iters ${MAX_ITERS} \
                        --checkpoints_name ${CHECKPOINTS_NAME} \
                        --pretrained ${PRETRAINED_MODEL} \
+                       --base_lr ${BASE_LR} \
+                       --nbb_mult 10.0\
                        --distributed \
                        2>&1 | tee ${LOG_FILE}
                        
