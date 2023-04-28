@@ -14,7 +14,7 @@ DATA_DIR="../../input/openseg-cityscapes-gtfine"
 SAVE_DIR="./result/cityscapes/checkpoints/"
 BACKBONE="deepbase_resnet101_dilated8"
 
-CONFIGS="configs/cityscapes/DC_R_101_D_8.json"
+CONFIGS="configs/cityscapes/R_101_D_8.json"
 CONFIGS_TEST="configs/cityscapes/R_101_D_8_TEST.json"
 
 MODEL_NAME="spatial_ocrnet_dc"
