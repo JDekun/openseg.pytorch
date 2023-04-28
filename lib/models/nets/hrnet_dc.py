@@ -119,9 +119,9 @@ class HRNet_W48_ASPOCR(nn.Module):
         return out_aux, out
 
 
-class HRNet_W48_OCR(nn.Module):
+class HRNet_W48_OCR_DC(nn.Module):
     def __init__(self, configer):
-        super(HRNet_W48_OCR, self).__init__()
+        super(HRNet_W48_OCR_DC, self).__init__()
         self.configer = configer
         self.num_classes = self.configer.get("data", "num_classes")
         self.backbone = BackboneSelector(configer).get_backbone()

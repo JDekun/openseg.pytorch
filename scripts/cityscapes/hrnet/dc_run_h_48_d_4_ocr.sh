@@ -9,13 +9,14 @@ cd ../../../
 
 DATA_DIR="../../input/openseg-cityscapes-gtfine"
 SAVE_DIR="./seg_result/cityscapes/"
-BACKBONE="hrnet48"
 
 CONFIGS="configs/cityscapes/H_48_D_4.json"
 CONFIGS_TEST="configs/cityscapes/H_48_D_4_TEST.json"
 
-MODEL_NAME="hrnet_w48_ocr"
-LOSS_TYPE="fs_auxce_loss"
+BACKBONE="hrnet48"
+MODEL_NAME="hrnet_w48_ocr_dc"
+LOSS_TYPE="fs_auxce_loss_dc"
+
 CHECKPOINTS_NAME="${MODEL_NAME}_lr2x_$(date +%F_%H-%M-%S)"
 LOG_FILE="./log/cityscapes/${CHECKPOINTS_NAME}.log"
 echo "Logging to $LOG_FILE"

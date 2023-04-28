@@ -49,6 +49,7 @@ from lib.models.nets.segfix import SegFix_HRNet
 from lib.models.nets.fcnet_dc import FcnNetDC
 from lib.models.nets.ocrnet_dc import SpatialOCRNetDC
 from lib.models.nets.hrnet_dc import HRNet_W48_DC
+from lib.models.nets.hrnet_dc import HRNet_W48_OCR_DC
 
 
 
@@ -85,7 +86,8 @@ SEG_MODEL_DICT = {
     # dcnet
     "spatial_ocrnet_dc": SpatialOCRNetDC,
     "fcnet_dc": FcnNetDC,
-    "hrnet_w48_dc": HRNet_W48DC,
+    "hrnet_w48_dc": HRNet_W48_DC,
+    "hrnet_w48_ocr_dc": HRNet_W48_OCR_DC,
 }
 
 

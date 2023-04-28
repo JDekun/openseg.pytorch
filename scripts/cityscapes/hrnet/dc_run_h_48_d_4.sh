@@ -14,16 +14,16 @@ BACKBONE="hrnet48"
 CONFIGS="configs/cityscapes/H_48_D_4.json"
 CONFIGS_TEST="configs/cityscapes/H_48_D_4_TEST.json"
 
-MODEL_NAME="hrnet_w48_ocr"
-LOSS_TYPE="fs_auxce_loss"
-CHECKPOINTS_NAME="${MODEL_NAME}_lr2x_$(date +%F_%H-%M-%S)"
+MODEL_NAME="hrnet_w48_dc"
+LOSS_TYPE="fs_ce_loss_dc"
+CHECKPOINTS_NAME="${MODEL_NAME}_$(date +%F_%H-%M-%S)"
 LOG_FILE="./log/cityscapes/${CHECKPOINTS_NAME}.log"
 echo "Logging to $LOG_FILE"
 mkdir -p `dirname $LOG_FILE`
 
 PRETRAINED_MODEL="../../input/pre-trained/hrnetv2_w48_imagenet_pretrained.pth"
-MAX_ITERS=40000
-BASE_LR=0.02
+MAX_ITERS=80000
+
 
 if [ "$1"x == "train"x ]; then
   python -u main.py --configs ${CONFIGS} \
@@ -34,17 +34,12 @@ if [ "$1"x == "train"x ]; then
                        --log_to_file n \
                        --backbone ${BACKBONE} \
                        --model_name ${MODEL_NAME} \
-                       --gpu 2 3 4 6\
-                       --workers 4\
-                       --train_batch_size 16\
-                       --val_batch_size 8\
+                       --gpu 0 1 2 3 \
                        --data_dir ${DATA_DIR} \
                        --loss_type ${LOSS_TYPE} \
                        --max_iters ${MAX_ITERS} \
                        --checkpoints_name ${CHECKPOINTS_NAME} \
                        --pretrained ${PRETRAINED_MODEL} \
-                       --distributed \
-                       --base_lr ${BASE_LR} \
                        2>&1 | tee ${LOG_FILE}
                        
 
@@ -78,22 +73,6 @@ elif [ "$1"x == "val"x ]; then
   ${PYTHON} -u cityscapes_evaluator.py --pred_dir ${SAVE_DIR}${CHECKPOINTS_NAME}_val/label  \
                                        --gt_dir ${DATA_DIR}/val/label
 
-elif [ "$1"x == "segfix"x ]; then
-  if [ "$3"x == "test"x ]; then
-    DIR=${SAVE_DIR}${CHECKPOINTS_NAME}_test_ss/label
-    echo "Applying SegFix for $DIR"
-    ${PYTHON} scripts/cityscapes/segfix.py \
-      --input $DIR \
-      --split test \
-      --offset ${DATA_ROOT}/cityscapes/test_offset/semantic/offset_hrnext/
-  elif [ "$3"x == "val"x ]; then
-    DIR=${SAVE_DIR}${CHECKPOINTS_NAME}_val/label
-    echo "Applying SegFix for $DIR"
-    ${PYTHON} scripts/cityscapes/segfix.py \
-      --input $DIR \
-      --split val \
-      --offset ${DATA_ROOT}/cityscapes/val/offset_pred/semantic/offset_hrnext/
-  fi
 
 elif [ "$1"x == "test"x ]; then
   if [ "$3"x == "ss"x ]; then
