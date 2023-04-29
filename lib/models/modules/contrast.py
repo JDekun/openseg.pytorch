@@ -155,7 +155,7 @@ class Mep_Module(nn.Module):
                     nn.Conv2d(self.proj_dim, 256, kernel_size=1, stride=1, padding=0, bias=True),
                     ModuleHelper.BNReLU(256, bn_type=self.configer.get("network", "bn_type")),)
             elif layer == "layer_1":
-                self.de_rojector_layer1 = nn.Sequential(
+                self.de_projector_layer1 = nn.Sequential(
                     nn.Conv2d(self.proj_dim, 256, kernel_size=1, stride=1, padding=0, bias=True),
                     ModuleHelper.BNReLU(256, bn_type=self.configer.get("network", "bn_type")),)
                 
