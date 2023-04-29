@@ -216,8 +216,11 @@ def CONTRAST_Loss(cls_score,
                 layer,
                 labels,
                 memory_size = 0,
-                sample = 'weight_ade_8'):
+                sample = 'weight_ade_8',
+                contrast_type = None):
     
+    if decode == None:
+        decode == layer
     feats = decode
     feats_y = layer
 
@@ -259,7 +262,7 @@ def CONTRAST_Loss(cls_score,
     feats_, feats_y_, labels_, feats_que_, feats_y_que_, labels_queue_ = Sampling(sample, feats, feats_y, labels, predict)
 
     if feats_ != None:
-        loss = Contrastive(feats_, feats_y_, labels_, queue, queue_label)
+        loss = Contrastive(feats_, feats_y_, labels_, queue,  queue_label, contrast_type)
         # if memory_size:
         #     dequeue_and_enqueue_self_seri(args, feats_que_, feats_y_que_, labels_queue_,
         #                                     encode_queue=queue_origin['encode_queue'],

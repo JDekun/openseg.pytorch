@@ -50,6 +50,7 @@ from lib.models.nets.fcnet_dc import FcnNetDC
 from lib.models.nets.ocrnet_dc import SpatialOCRNetDC
 from lib.models.nets.hrnet_dc import HRNet_W48_DC
 from lib.models.nets.hrnet_dc import HRNet_W48_OCR_DC
+from lib.models.nets.ocrnet_dc import ASPOCRNetMep
 
 
 
@@ -88,6 +89,7 @@ SEG_MODEL_DICT = {
     "fcnet_dc": FcnNetDC,
     "hrnet_w48_dc": HRNet_W48_DC,
     "hrnet_w48_ocr_dc": HRNet_W48_OCR_DC,
+    "spatial_asp_ocrnet_mep": ASPOCRNetMep,
 }
 
 
