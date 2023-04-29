@@ -220,7 +220,7 @@ def CONTRAST_Loss(cls_score,
                 contrast_type = None):
     
     if decode == None:
-        decode == layer
+        decode = layer
     feats = decode
     feats_y = layer
 
