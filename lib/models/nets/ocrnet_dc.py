@@ -95,7 +95,7 @@ class SpatialOCRNetDC(nn.Module):
         return x_dsn, x, output
 
 
-class ASPOCRNet(nn.Module):
+class ASPOCRNetMep(nn.Module):
     """
     Object-Contextual Representations for Semantic Segmentation,
     Yuan, Yuhui and Chen, Xilin and Wang, Jingdong
@@ -103,7 +103,7 @@ class ASPOCRNet(nn.Module):
 
     def __init__(self, configer):
         self.inplanes = 128
-        super(ASPOCRNet, self).__init__()
+        super(ASPOCRNetMep, self).__init__()
         self.configer = configer
         self.num_classes = self.configer.get("data", "num_classes")
         self.backbone = BackboneSelector(configer).get_backbone()
@@ -114,10 +114,10 @@ class ASPOCRNet(nn.Module):
         else:
             in_channels = [1024, 2048]
 
-        # we should increase the dilation rates as the output stride is larger
-        from lib.models.modules.spatial_ocr_block import SpatialOCR_ASP_Module
-
-        self.asp_ocr_head = SpatialOCR_ASP_Module(
+        # Mep
+        from lib.models.modules.spatial_ocr_block_mep import SpatialOCR_ASP_Module_Mep
+        self.asp_ocr_head = SpatialOCR_ASP_Module_Mep(
+            configer=configer,
             features=2048,
             hidden_features=256,
             out_features=256,
@@ -140,7 +140,9 @@ class ASPOCRNet(nn.Module):
     def forward(self, x_):
         x = self.backbone(x_)
         x_dsn = self.dsn_head(x[-2])
-        x = self.asp_ocr_head(x[-1], x_dsn)
+        # mep
+        x, proj = self.asp_ocr_head(x[-1], x_dsn)
+        # mep
         x = self.head(x)
         x_dsn = F.interpolate(
             x_dsn, size=(x_.size(2), x_.size(3)), mode="bilinear", align_corners=True
@@ -148,4 +150,4 @@ class ASPOCRNet(nn.Module):
         x = F.interpolate(
             x, size=(x_.size(2), x_.size(3)), mode="bilinear", align_corners=True
         )
-        return x_dsn, x
+        return x_dsn, x, proj

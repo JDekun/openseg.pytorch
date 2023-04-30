@@ -27,14 +27,14 @@ from lib.utils.distributed import is_distributed
 
 SEG_LOSS_DICT = {
     "fs_ce_loss": FSCELoss,
-    "fs_ce_loss_dc": FSCELossDC,
     "fs_ohemce_loss": FSOhemCELoss,
     "fs_auxce_loss": FSAuxCELoss,
-    "fs_auxce_loss_dc": FSAuxCELossDC,
     "fs_aux_rmi_loss": FSAuxRMILoss,
     "fs_auxohemce_loss": FSAuxOhemCELoss,
     "segfix_loss": SegFixLoss,
     "rmi_loss": RMILoss,
+    "fs_ce_loss_dc": FSCELossDC,
+    "fs_auxce_loss_dc": FSAuxCELossDC,
 }
 
 

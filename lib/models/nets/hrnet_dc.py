@@ -76,18 +76,20 @@ class HRNet_W48_DC(nn.Module):
         return out, output
 
 
-class HRNet_W48_ASPOCR(nn.Module):
+class HRNet_W48_ASPOCR_Mep(nn.Module):
     def __init__(self, configer):
-        super(HRNet_W48_ASPOCR, self).__init__()
+        super(HRNet_W48_ASPOCR_Mep, self).__init__()
         self.configer = configer
         self.num_classes = self.configer.get("data", "num_classes")
         self.backbone = BackboneSelector(configer).get_backbone()
 
         # extra added layers
         in_channels = 720  # 48 + 96 + 192 + 384
-        from lib.models.modules.spatial_ocr_block import SpatialOCR_ASP_Module
 
-        self.asp_ocr_head = SpatialOCR_ASP_Module(
+        # Mep
+        from lib.models.modules.spatial_ocr_block_mep import SpatialOCR_ASP_Module_Mep
+        self.asp_ocr_head = SpatialOCR_ASP_Module_Mep(
+            configer=configer,
             features=720,
             hidden_features=256,
             out_features=256,
@@ -119,7 +121,10 @@ class HRNet_W48_ASPOCR(nn.Module):
         feats = torch.cat([feat1, feat2, feat3, feat4], 1)
         out_aux = self.aux_head(feats)
 
-        feats = self.asp_ocr_head(feats, out_aux)
+        # mep
+        feats, proj = self.asp_ocr_head(feats, out_aux)
+        # mep
+
         out = self.cls_head(feats)
 
         out_aux = F.interpolate(
@@ -128,7 +133,7 @@ class HRNet_W48_ASPOCR(nn.Module):
         out = F.interpolate(
             out, size=(x_.size(2), x_.size(3)), mode="bilinear", align_corners=True
         )
-        return out_aux, out
+        return out_aux, out, proj
 
 
 class HRNet_W48_OCR_DC(nn.Module):

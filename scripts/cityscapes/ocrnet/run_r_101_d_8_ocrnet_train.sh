@@ -10,8 +10,8 @@ cd ../../../
 
 # export PYTHONPATH="$PWD":$PYTHONPATH
 
-DATA_DIR="${DATA_ROOT}/cityscapes"
-SAVE_DIR="${DATA_ROOT}/seg_result/cityscapes/"
+DATA_DIR="../../input/openseg-cityscapes-gtfine"
+SAVE_DIR="./result/cityscapes/checkpoints/"
 BACKBONE="deepbase_resnet101_dilated8"
 
 CONFIGS="configs/cityscapes/R_101_D_8.json"
@@ -24,7 +24,7 @@ LOG_FILE="./log/cityscapes/${CHECKPOINTS_NAME}.log"
 echo "Logging to $LOG_FILE"
 mkdir -p `dirname $LOG_FILE`
 
-PRETRAINED_MODEL="./pretrained_model/resnet101-imagenet.pth"
+PRETRAINED_MODEL="../../input/pre-trained/resnet101-imagenet-openseg.pth"
 MAX_ITERS=40000
 
 
@@ -48,7 +48,7 @@ if [ "$1"x == "train"x ]; then
                        
 
 elif [ "$1"x == "resume"x ]; then
-  ${PYTHON} -u main.py --configs ${CONFIGS} \
+  python -u main.py --configs ${CONFIGS} \
                        --drop_last y \
                        --phase train \
                        --gathered n \

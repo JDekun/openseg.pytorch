@@ -17,7 +17,7 @@ BACKBONE="hrnet48"
 MODEL_NAME="hrnet_w48_ocr_dc"
 LOSS_TYPE="fs_auxce_loss_dc"
 
-CHECKPOINTS_NAME="${MODEL_NAME}_lr2x_$(date +%F_%H-%M-%S)"
+CHECKPOINTS_NAME="dc_${MODEL_NAME}_lr2x_$(date +%F_%H-%M-%S)"
 LOG_FILE="./log/cityscapes/${CHECKPOINTS_NAME}.log"
 echo "Logging to $LOG_FILE"
 mkdir -p `dirname $LOG_FILE`
@@ -37,14 +37,16 @@ if [ "$1"x == "train"x ]; then
                        --model_name ${MODEL_NAME} \
                        --gpu 2 3 4 6\
                        --workers 4\
-                       --train_batch_size 16\
-                       --val_batch_size 8\
+                       --train_batch_size 8\
+                       --val_batch_size 4\
                        --data_dir ${DATA_DIR} \
                        --loss_type ${LOSS_TYPE} \
                        --max_iters ${MAX_ITERS} \
                        --checkpoints_name ${CHECKPOINTS_NAME} \
                        --pretrained ${PRETRAINED_MODEL} \
                        --distributed \
+                       --projector "layer_1" "layer_2" "layer_3" "layer_4" \
+                       --loss_weights 0.1 0.1 0.1 0.1 \
                        --base_lr ${BASE_LR} \
                        2>&1 | tee ${LOG_FILE}
                        

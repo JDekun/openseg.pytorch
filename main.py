@@ -438,7 +438,6 @@ if __name__ == "__main__":
     parser.add_argument(
         "--proj_dim",
         type=int,
-        nargs="+",
         default=128,
         dest="contrast:proj_dim",
         help="contrast:proj_dim.",
@@ -459,6 +458,14 @@ if __name__ == "__main__":
         dest="contrast:loss_weights",
         help="contrast:loss_weights.",
     )
+    parser.add_argument(
+        "--contrast_type",
+        type=str,
+        default=None,
+        dest="contrast:contrast_type",
+        help="contrast:contrast_type.",
+    )
+
 
     # ***********  Params for env.  **********
     parser.add_argument("--seed", default=304, type=int, help="manual seed")

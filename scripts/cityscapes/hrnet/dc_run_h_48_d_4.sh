@@ -34,12 +34,16 @@ if [ "$1"x == "train"x ]; then
                        --log_to_file n \
                        --backbone ${BACKBONE} \
                        --model_name ${MODEL_NAME} \
-                       --gpu 0 1 2 3 \
+                       --gpu 2 3 4 6\
+                       --workers 4\
+                       --train_batch_size 8\
+                       --val_batch_size 4\
                        --data_dir ${DATA_DIR} \
                        --loss_type ${LOSS_TYPE} \
                        --max_iters ${MAX_ITERS} \
                        --checkpoints_name ${CHECKPOINTS_NAME} \
                        --pretrained ${PRETRAINED_MODEL} \
+                       --distributed \
                        2>&1 | tee ${LOG_FILE}
                        
 
