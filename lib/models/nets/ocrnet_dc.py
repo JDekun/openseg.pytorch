@@ -114,9 +114,8 @@ class ASPOCRNetMep(nn.Module):
         else:
             in_channels = [1024, 2048]
 
-        # we should increase the dilation rates as the output stride is larger
+        # Mep
         from lib.models.modules.spatial_ocr_block_mep import SpatialOCR_ASP_Module_Mep
-
         self.asp_ocr_head = SpatialOCR_ASP_Module_Mep(
             configer=configer,
             features=2048,
@@ -141,7 +140,9 @@ class ASPOCRNetMep(nn.Module):
     def forward(self, x_):
         x = self.backbone(x_)
         x_dsn = self.dsn_head(x[-2])
+        # mep
         x, proj = self.asp_ocr_head(x[-1], x_dsn)
+        # mep
         x = self.head(x)
         x_dsn = F.interpolate(
             x_dsn, size=(x_.size(2), x_.size(3)), mode="bilinear", align_corners=True

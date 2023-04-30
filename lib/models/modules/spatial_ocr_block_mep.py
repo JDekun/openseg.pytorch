@@ -348,7 +348,7 @@ class SpatialOCR_ASP_Module_Mep(nn.Module):
 
         # mep
         from lib.models.modules.contrast import Mep_Module
-        self.mep_head = Mep_Module(configer)
+        self.mep_head = Mep_Module(configer, hidden_features)
 
     def _cat_each(self, feat1, feat2, feat3, feat4, feat5):
         assert(len(feat1)==len(feat2))

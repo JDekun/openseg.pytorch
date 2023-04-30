@@ -116,6 +116,7 @@ class Contrast_Module(nn.Module):
 class Mep_Module(nn.Module):
     def __init__(self, 
                  configer,
+                 inout_dim,
                  ):
         super(Mep_Module, self).__init__()
 
@@ -127,37 +128,37 @@ class Mep_Module(nn.Module):
         for layer in self.projector:
             if layer == "layer_4":
                 self.projector_layer4 = nn.Sequential(
-                    nn.Conv2d(256, self.proj_dim, kernel_size=1, stride=1, padding=0, bias=True),
+                    nn.Conv2d(inout_dim, self.proj_dim, kernel_size=1, stride=1, padding=0, bias=True),
                     ModuleHelper.BNReLU(self.proj_dim, bn_type=self.configer.get("network", "bn_type")),)
             elif layer == "layer_3":
                 self.projector_layer3 = nn.Sequential(
-                    nn.Conv2d(256, self.proj_dim, kernel_size=1, stride=1, padding=0, bias=True),
+                    nn.Conv2d(inout_dim, self.proj_dim, kernel_size=1, stride=1, padding=0, bias=True),
                     ModuleHelper.BNReLU(self.proj_dim, bn_type=self.configer.get("network", "bn_type")),)
             elif layer == "layer_2":
                 self.projector_layer2 = nn.Sequential(
-                    nn.Conv2d(256, self.proj_dim, kernel_size=1, stride=1, padding=0, bias=True),
+                    nn.Conv2d(inout_dim, self.proj_dim, kernel_size=1, stride=1, padding=0, bias=True),
                     ModuleHelper.BNReLU(self.proj_dim, bn_type=self.configer.get("network", "bn_type")),)
             elif layer == "layer_1":
                 self.projector_layer1 = nn.Sequential(
-                    nn.Conv2d(256, self.proj_dim, kernel_size=1, stride=1, padding=0, bias=True),
+                    nn.Conv2d(inout_dim, self.proj_dim, kernel_size=1, stride=1, padding=0, bias=True),
                     ModuleHelper.BNReLU(self.proj_dim, bn_type=self.configer.get("network", "bn_type")),)
         for layer in self.projector:
             if layer == "layer_4":
                 self.de_projector_layer4 = nn.Sequential(
-                    nn.Conv2d(self.proj_dim, 256, kernel_size=1, stride=1, padding=0, bias=True),
-                    ModuleHelper.BNReLU(256, bn_type=self.configer.get("network", "bn_type")),)
+                    nn.Conv2d(self.proj_dim, inout_dim, kernel_size=1, stride=1, padding=0, bias=True),
+                    ModuleHelper.BNReLU(inout_dim, bn_type=self.configer.get("network", "bn_type")),)
             elif layer == "layer_3":
                 self.de_projector_layer3 = nn.Sequential(
-                    nn.Conv2d(self.proj_dim, 256, kernel_size=1, stride=1, padding=0, bias=True),
-                    ModuleHelper.BNReLU(256, bn_type=self.configer.get("network", "bn_type")),)
+                    nn.Conv2d(self.proj_dim, inout_dim, kernel_size=1, stride=1, padding=0, bias=True),
+                    ModuleHelper.BNReLU(inout_dim, bn_type=self.configer.get("network", "bn_type")),)
             elif layer == "layer_2":
                 self.de_projector_layer2 = nn.Sequential(
-                    nn.Conv2d(self.proj_dim, 256, kernel_size=1, stride=1, padding=0, bias=True),
-                    ModuleHelper.BNReLU(256, bn_type=self.configer.get("network", "bn_type")),)
+                    nn.Conv2d(self.proj_dim, inout_dim, kernel_size=1, stride=1, padding=0, bias=True),
+                    ModuleHelper.BNReLU(inout_dim, bn_type=self.configer.get("network", "bn_type")),)
             elif layer == "layer_1":
                 self.de_projector_layer1 = nn.Sequential(
-                    nn.Conv2d(self.proj_dim, 256, kernel_size=1, stride=1, padding=0, bias=True),
-                    ModuleHelper.BNReLU(256, bn_type=self.configer.get("network", "bn_type")),)
+                    nn.Conv2d(self.proj_dim, inout_dim, kernel_size=1, stride=1, padding=0, bias=True),
+                    ModuleHelper.BNReLU(inout_dim, bn_type=self.configer.get("network", "bn_type")),)
                 
 
     def forward(self, feat2, feat3, feat4, feat5):
