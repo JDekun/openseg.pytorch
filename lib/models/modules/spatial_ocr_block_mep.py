@@ -421,7 +421,7 @@ class FCN_Module_Mep(nn.Module):
             z.append(torch.cat((feat1[i], feat2[i], feat3[i], feat4[i], feat5[i]), 1))
         return z
 
-    def forward(self, x, probs):
+    def forward(self, x):
         if isinstance(x, Variable):
             _, _, h, w = x.size()
         elif isinstance(x, tuple) or isinstance(x, list):
