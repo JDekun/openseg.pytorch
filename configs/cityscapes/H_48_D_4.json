@@ -13,7 +13,7 @@
     "proj_dim": 128,
     "projector": ["layer_1", "layer_2", "layer_3", "layer_4"],
     "loss_weights": [0.1, 0.1, 0.1, 0.1],
-    "contrast_type": "inter" 
+    "contrast_type": "intra" 
   },
   "train": {
     "batch_size": 16,
