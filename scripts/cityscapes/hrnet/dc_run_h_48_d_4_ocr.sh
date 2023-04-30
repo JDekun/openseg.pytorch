@@ -17,7 +17,7 @@ BACKBONE="hrnet48"
 MODEL_NAME="hrnet_w48_ocr_dc"
 LOSS_TYPE="fs_auxce_loss_dc"
 
-CHECKPOINTS_NAME="${MODEL_NAME}_lr2x_$(date +%F_%H-%M-%S)"
+CHECKPOINTS_NAME="dc_${MODEL_NAME}_lr2x_$(date +%F_%H-%M-%S)"
 LOG_FILE="./log/cityscapes/${CHECKPOINTS_NAME}.log"
 echo "Logging to $LOG_FILE"
 mkdir -p `dirname $LOG_FILE`

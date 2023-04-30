@@ -27,7 +27,6 @@ mkdir -p `dirname $LOG_FILE`
 PRETRAINED_MODEL="../../input/pre-trained/resnet101-imagenet-openseg.pth"
 MAX_ITERS=40000
 
-
 if [ "$1"x == "train"x ]; then
   python -u main.py --configs ${CONFIGS} \
                        --drop_last y \
