@@ -37,8 +37,8 @@ if [ "$1"x == "train"x ]; then
                        --model_name ${MODEL_NAME} \
                        --gpu 3 4 5 6 \
                        --workers 8\
-                       --train_batch_size 16\
-                       --val_batch_size 8\
+                       --train_batch_size 8\
+                       --val_batch_size 4\
                        --data_dir ${DATA_DIR} \
                        --loss_type ${LOSS_TYPE} \
                        --max_iters ${MAX_ITERS} \
