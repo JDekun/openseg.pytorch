@@ -53,6 +53,8 @@ from lib.models.nets.hrnet_dc import HRNet_W48_DC
 from lib.models.nets.hrnet_dc import HRNet_W48_OCR_DC
 from lib.models.nets.hrnet_dc import HRNet_W48_ASPOCR_Mep
 
+from lib.models.nets.con_mep_resnet import FcnNetMep
+
 
 from lib.utils.tools.logger import Logger as Log
 
@@ -91,6 +93,8 @@ SEG_MODEL_DICT = {
     "hrnet_w48_ocr_dc": HRNet_W48_OCR_DC,
     "spatial_asp_ocrnet_mep": ASPOCRNetMep,
     "hrnet_w48_asp_ocr_mep": HRNet_W48_ASPOCR_Mep,
+    # mep
+    "resnet_fcn_mep": FcnNetMep,
 }
 
 

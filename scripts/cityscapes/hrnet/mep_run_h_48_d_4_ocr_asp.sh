@@ -17,7 +17,7 @@ BACKBONE="hrnet48"
 MODEL_NAME="hrnet_w48_asp_ocr_mep"
 LOSS_TYPE="fs_auxce_loss_dc"
 
-CHECKPOINTS_NAME="de_${MODEL_NAME}_lr2x_$(date +%F_%H-%M-%S)"
+CHECKPOINTS_NAME="mep_${MODEL_NAME}_lr2x_$(date +%F_%H-%M-%S)"
 LOG_FILE="./log/cityscapes/${CHECKPOINTS_NAME}.log"
 echo "Logging to $LOG_FILE"
 mkdir -p `dirname $LOG_FILE`
@@ -35,10 +35,10 @@ if [ "$1"x == "train"x ]; then
                        --log_to_file n \
                        --backbone ${BACKBONE} \
                        --model_name ${MODEL_NAME} \
-                       --gpu 1 5 7 9 \
-                       --workers 4\
-                       --train_batch_size 16\
-                       --val_batch_size 8\
+                       --gpu 3 4 5 6 \
+                       --workers 8\
+                       --train_batch_size 8\
+                       --val_batch_size 4\
                        --data_dir ${DATA_DIR} \
                        --loss_type ${LOSS_TYPE} \
                        --max_iters ${MAX_ITERS} \

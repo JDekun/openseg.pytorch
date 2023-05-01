@@ -390,6 +390,67 @@ class SpatialOCR_ASP_Module_Mep(nn.Module):
 
 
 
+class FCN_Module_Mep(nn.Module):
+    def __init__(self, configer, features, hidden_features=256, out_features=512, dilations=(12, 24, 36), num_classes=19, bn_type=None, dropout=0.1):
+        super(FCN_Module_Mep, self).__init__()
+        self.fcn = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=3, padding=1, dilation=1, bias=True),
+                                     ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),
+                                    )
+        self.conv2 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=1, padding=0, dilation=1, bias=True),
+                                   ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
+        self.conv3 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=3, padding=dilations[0], dilation=dilations[0], bias=True),
+                                   ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
+        self.conv4 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=3, padding=dilations[1], dilation=dilations[1], bias=True),
+                                   ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
+        self.conv5 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=3, padding=dilations[2], dilation=dilations[2], bias=True),
+                                   ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
+        self.conv_bn_dropout = nn.Sequential(
+            nn.Conv2d(hidden_features * 5, out_features, kernel_size=1, padding=0, dilation=1, bias=True),
+            ModuleHelper.BNReLU(out_features, bn_type=bn_type),
+            nn.Dropout2d(dropout)
+            )
+
+        # mep
+        from lib.models.modules.contrast import Mep_Module
+        self.mep_head = Mep_Module(configer, hidden_features)
+
+    def _cat_each(self, feat1, feat2, feat3, feat4, feat5):
+        assert(len(feat1)==len(feat2))
+        z = []
+        for i in range(len(feat1)):
+            z.append(torch.cat((feat1[i], feat2[i], feat3[i], feat4[i], feat5[i]), 1))
+        return z
+
+    def forward(self, x):
+        if isinstance(x, Variable):
+            _, _, h, w = x.size()
+        elif isinstance(x, tuple) or isinstance(x, list):
+            _, _, h, w = x[0].size()
+        else:
+            raise RuntimeError('unknown input type')
+
+        feat1 = self.fcn(x)
+
+        feat2 = self.conv2(x)
+        feat3 = self.conv3(x)
+        feat4 = self.conv4(x)
+        feat5 = self.conv5(x)
+
+        # mep
+        feat2,feat3,feat4,feat5, proj = self.mep_head(feat2,feat3,feat4,feat5)     
+        # mep
+
+        if isinstance(x, Variable):
+            out = torch.cat((feat1, feat2, feat3, feat4, feat5), 1)
+        elif isinstance(x, tuple) or isinstance(x, list):
+            out = self._cat_each(feat1, feat2, feat3, feat4, feat5)
+        else:
+            raise RuntimeError('unknown input type')
+
+        output = self.conv_bn_dropout(out)
+        return output, proj
+
+
 if __name__ == "__main__":
     os.environ["CUDA_VISIBLE_DEVICES"] = '0'
     probs = torch.randn((1, 19, 128, 128)).cuda()
