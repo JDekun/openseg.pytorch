@@ -49,7 +49,7 @@ class FcnNetMep(nn.Module):
         x = self.backbone(x_)
         x_dsn = self.dsn_head(x[-2])
         # mep
-        x, proj = self.fcn_head(x[-1])
+        x = self.fcn_head(x[-1])
         # mep
         x = self.head(x)
         x_dsn = F.interpolate(
@@ -58,7 +58,7 @@ class FcnNetMep(nn.Module):
         x = F.interpolate(
             x, size=(x_.size(2), x_.size(3)), mode="bilinear", align_corners=True
         )
-        return x_dsn, x, proj
+        return x_dsn, x
 
 
 
