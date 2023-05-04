@@ -52,9 +52,13 @@ from lib.models.nets.ocrnet_dc import ASPOCRNetMep
 from lib.models.nets.hrnet_dc import HRNet_W48_DC
 from lib.models.nets.hrnet_dc import HRNet_W48_OCR_DC
 from lib.models.nets.hrnet_dc import HRNet_W48_ASPOCR_Mep
+# contrast
+from lib.models.nets.contrast_hrnet import HRNet_W48_ASPOCR_MLM
 
-from lib.models.nets.con_mep_resnet import FcnNetMep
-from lib.models.nets.con_mep_hrnet import HRNet_W48_ASPOCR_MLM
+# contrast_asp
+from lib.models.nets.contrast_resnet import RES_OCR_ASP
+from lib.models.nets.contrast_resnet import RES_FCN_ASP
+from lib.models.nets.contrast_resnet import RES_FCN_ASP_3
 
 
 from lib.utils.tools.logger import Logger as Log
@@ -95,8 +99,11 @@ SEG_MODEL_DICT = {
     "spatial_asp_ocrnet_mep": ASPOCRNetMep,
     "hrnet_w48_asp_ocr_mep": HRNet_W48_ASPOCR_Mep,
     # mep
-    "resnet_fcn_mep": FcnNetMep,
     "hrnet_w48_asp_ocr_mlm": HRNet_W48_ASPOCR_MLM,
+    # contrast_asp
+    "resnet_ocr_asp": RES_OCR_ASP,
+    "resnet_fcn_asp": RES_FCN_ASP,
+    "resnet_fcn_asp_3": RES_FCN_ASP_3,
 }
 
 

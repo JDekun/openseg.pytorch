@@ -2,12 +2,9 @@
 SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 cd $SCRIPTPATH
 cd ../../../
-. config.profile
+# . config.profile
 # check the enviroment info
 # nvidia-smi
-# ${PYTHON} -m pip install torchcontrib
-# ${PYTHON} -m pip install git+https://github.com/lucasb-eyer/pydensecrf.git
-
 # export PYTHONPATH="$PWD":$PYTHONPATH
 
 DATA_DIR="../../input/openseg-cityscapes-gtfine"

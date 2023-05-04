@@ -1,11 +1,7 @@
 #!/usr/bin/env bash
 SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 cd $SCRIPTPATH
-cd ../../../
-# . config.profile
-# check the enviroment info
-# nvidia-smi
-# export PYTHONPATH="$PWD":$PYTHONPATH
+cd ../
 
 DATA_DIR="../../input/openseg-cityscapes-gtfine"
 SAVE_DIR="./result/cityscapes/checkpoints/"
@@ -14,10 +10,10 @@ BACKBONE="deepbase_resnet101_dilated8"
 CONFIGS="configs/cityscapes/R_101_D_8.json"
 CONFIGS_TEST="configs/cityscapes/R_101_D_8_TEST.json"
 
-MODEL_NAME="resnet_ocr_asp"
+MODEL_NAME="resnet_fcn_asp_3"
 LOSS_TYPE="fs_auxce_loss"
 CHECKPOINTS_NAME="${MODEL_NAME}_${BACKBONE}_$(date +%F_%H-%M-%S)"
-LOG_FILE="./log/cityscapes/${CHECKPOINTS_NAME}.log"
+LOG_FILE="./experiment/log/cityscapes/${CHECKPOINTS_NAME}.log"
 echo "Logging to $LOG_FILE"
 mkdir -p `dirname $LOG_FILE`
 
