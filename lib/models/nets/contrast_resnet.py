@@ -49,7 +49,7 @@ class RES_FCN_ASP_3_MEP(nn.Module):
         x = self.backbone(x_)
         x_dsn = self.dsn_head(x[-2])
         # mep
-        x = self.fcn_asp_head(x[-1])
+        x, proj = self.fcn_asp_head(x[-1])
         # mep
         x = self.head(x)
         x_dsn = F.interpolate(
@@ -58,7 +58,7 @@ class RES_FCN_ASP_3_MEP(nn.Module):
         x = F.interpolate(
             x, size=(x_.size(2), x_.size(3)), mode="bilinear", align_corners=True
         )
-        return x_dsn, x
+        return x_dsn, x, proj
 
 
 class RES_FCN_ASP_3(nn.Module):
