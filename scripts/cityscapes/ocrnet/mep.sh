@@ -2,10 +2,6 @@
 SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 cd $SCRIPTPATH
 cd ../../../
-# . config.profile
-# check the enviroment info
-# nvidia-smi
-# export PYTHONPATH="$PWD":$PYTHONPATH
 
 DATA_DIR="../../input/openseg-cityscapes-gtfine"
 SAVE_DIR="./result/cityscapes/checkpoints/"

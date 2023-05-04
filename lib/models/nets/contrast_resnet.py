@@ -7,11 +7,11 @@ from lib.models.backbones.backbone_selector import BackboneSelector
 from lib.models.tools.module_helper import ModuleHelper
 
 
-class FcnNetMep(nn.Module):
+class RES_FCN_ASP(nn.Module):
 
     def __init__(self, configer):
         self.inplanes = 128
-        super(FcnNetMep, self).__init__()
+        super(RES_FCN_ASP, self).__init__()
         self.configer = configer
         self.num_classes = self.configer.get("data", "num_classes")
         self.backbone = BackboneSelector(configer).get_backbone()
@@ -23,8 +23,8 @@ class FcnNetMep(nn.Module):
             in_channels = [1024, 2048]
 
         # Mep
-        from lib.models.modules.spatial_ocr_block_mep import FCN_Module_Mep
-        self.fcn_head = FCN_Module_Mep(
+        from lib.models.nets.contrast_asp import FCN_ASP
+        self.fcn_asp_head = FCN_ASP(
             configer=configer,
             features=2048,
             hidden_features=256,
@@ -49,7 +49,7 @@ class FcnNetMep(nn.Module):
         x = self.backbone(x_)
         x_dsn = self.dsn_head(x[-2])
         # mep
-        x = self.fcn_head(x[-1])
+        x = self.fcn_asp_head(x[-1])
         # mep
         x = self.head(x)
         x_dsn = F.interpolate(
@@ -62,11 +62,11 @@ class FcnNetMep(nn.Module):
 
 
 
-class ASPOCRNetMep(nn.Module):
+class RES_OCR_ASP(nn.Module):
 
     def __init__(self, configer):
         self.inplanes = 128
-        super(ASPOCRNetMep, self).__init__()
+        super(RES_OCR_ASP, self).__init__()
         self.configer = configer
         self.num_classes = self.configer.get("data", "num_classes")
         self.backbone = BackboneSelector(configer).get_backbone()
@@ -78,8 +78,8 @@ class ASPOCRNetMep(nn.Module):
             in_channels = [1024, 2048]
 
         # Mep
-        from lib.models.modules.spatial_ocr_block_mep import SpatialOCR_ASP_Module_Mep
-        self.asp_ocr_head = SpatialOCR_ASP_Module_Mep(
+        from lib.models.nets.contrast_asp import OCR_ASP
+        self.ocr_asp_head = OCR_ASP(
             configer=configer,
             features=2048,
             hidden_features=256,
@@ -104,7 +104,7 @@ class ASPOCRNetMep(nn.Module):
         x = self.backbone(x_)
         x_dsn = self.dsn_head(x[-2])
         # mep
-        x, proj = self.asp_ocr_head(x[-1], x_dsn)
+        x = self.ocr_asp_head(x[-1], x_dsn)
         # mep
         x = self.head(x)
         x_dsn = F.interpolate(
@@ -113,4 +113,4 @@ class ASPOCRNetMep(nn.Module):
         x = F.interpolate(
             x, size=(x_.size(2), x_.size(3)), mode="bilinear", align_corners=True
         )
-        return x_dsn, x, proj
+        return x_dsn, x
