@@ -11,7 +11,7 @@ class RES_FCN_ASP_3_MEP(nn.Module):
 
     def __init__(self, configer):
         self.inplanes = 128
-        super(RES_FCN_ASP_3, self).__init__()
+        super(RES_FCN_ASP_3_MEP, self).__init__()
         self.configer = configer
         self.num_classes = self.configer.get("data", "num_classes")
         self.backbone = BackboneSelector(configer).get_backbone()
