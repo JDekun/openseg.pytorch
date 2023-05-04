@@ -56,8 +56,9 @@ from lib.models.nets.hrnet_dc import HRNet_W48_ASPOCR_Mep
 from lib.models.nets.contrast_hrnet import HRNet_W48_ASPOCR_MLM
 
 # contrast_asp
-from lib.models.nets.contrast_resnet import RES_FCN_ASP
 from lib.models.nets.contrast_resnet import RES_OCR_ASP
+from lib.models.nets.contrast_resnet import RES_FCN_ASP
+from lib.models.nets.contrast_resnet import RES_FCN_ASP_3
 
 
 from lib.utils.tools.logger import Logger as Log
@@ -100,8 +101,9 @@ SEG_MODEL_DICT = {
     # mep
     "hrnet_w48_asp_ocr_mlm": HRNet_W48_ASPOCR_MLM,
     # contrast_asp
-    "resnet_fcn_asp": RES_FCN_ASP,
     "resnet_ocr_asp": RES_OCR_ASP,
+    "resnet_fcn_asp": RES_FCN_ASP,
+    "resnet_fcn_asp_3": RES_FCN_ASP_3,
 }
 
 
