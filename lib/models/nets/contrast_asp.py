@@ -81,8 +81,8 @@ class FCN_ASP(nn.Module):
         self.fcn = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=3, padding=1, dilation=1, bias=True),
                                      ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),
                                     )
-        self.conv2 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=1, padding=0, dilation=1, bias=True),
-                                   ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
+        # self.conv2 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=1, padding=0, dilation=1, bias=True),
+        #                            ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
         self.conv3 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=3, padding=dilations[0], dilation=dilations[0], bias=True),
                                    ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
         self.conv4 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=3, padding=dilations[1], dilation=dilations[1], bias=True),
@@ -91,6 +91,11 @@ class FCN_ASP(nn.Module):
                                    ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
         self.conv_bn_dropout = nn.Sequential(
             nn.Conv2d(hidden_features * 5, out_features, kernel_size=1, padding=0, dilation=1, bias=True),
+            ModuleHelper.BNReLU(out_features, bn_type=bn_type),
+            nn.Dropout2d(dropout)
+            )
+        self.conv_bn_dropout = nn.Sequential(
+            nn.Conv2d(hidden_features * 4, out_features, kernel_size=1, padding=0, dilation=1, bias=True),
             ModuleHelper.BNReLU(out_features, bn_type=bn_type),
             nn.Dropout2d(dropout)
             )
@@ -112,16 +117,18 @@ class FCN_ASP(nn.Module):
 
         feat1 = self.fcn(x)
 
-        feat2 = self.conv2(x)
+        # feat2 = self.conv2(x)
         feat3 = self.conv3(x)
         feat4 = self.conv4(x)
         feat5 = self.conv5(x)
 
 
         if isinstance(x, Variable):
-            out = torch.cat((feat1, feat2, feat3, feat4, feat5), 1)
+            # out = torch.cat((feat1, feat2, feat3, feat4, feat5), 1)
+            out = torch.cat((feat1, feat3, feat4, feat5), 1)
         elif isinstance(x, tuple) or isinstance(x, list):
-            out = self._cat_each(feat1, feat2, feat3, feat4, feat5)
+            # out = self._cat_each(feat1, feat2, feat3, feat4, feat5)
+            out = self._cat_each(feat1, feat3, feat4, feat5)
         else:
             raise RuntimeError('unknown input type')
 
