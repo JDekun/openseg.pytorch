@@ -39,19 +39,19 @@ class Mep_Module(nn.Module):
                     nn.Conv2d(inout_dim, self.proj_dim, kernel_size=1, stride=1, padding=0, bias=True),)
     
 
-    def forward(self, feat3, feat4, feat5):
+    def forward(self, feat):
         output = dict()
         layer = dict()
 
         for lay in self.projector:
             if lay == 'layer_4':
-                proj_layer4 = F.normalize(self.projector_layer4(feat5), dim=1)
+                proj_layer4 = F.normalize(self.projector_layer4(feat[2]), dim=1)
                 layer['layer_4'] = proj_layer4
             elif lay == 'layer_3':
-                proj_layer3 = F.normalize(self.projector_layer3(feat4), dim=1)
+                proj_layer3 = F.normalize(self.projector_layer3(feat[1]), dim=1)
                 layer['layer_3'] = proj_layer3
             elif lay == 'layer_2':
-                proj_layer2 = F.normalize(self.projector_layer2(feat3), dim=1)
+                proj_layer2 = F.normalize(self.projector_layer2(feat[0]), dim=1)
                 layer['layer_2'] = proj_layer2
 
         output["proj"] = layer
