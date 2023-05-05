@@ -26,7 +26,7 @@ class FCN_ASP_1_Mep(nn.Module):
         # self.conv5 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=3, padding=dilations[2], dilation=dilations[2], bias=True),
         #                            ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
         self.conv_bn_dropout = nn.Sequential(
-            nn.Conv2d(hidden_features * 3, out_features, kernel_size=1, padding=0, dilation=1, bias=True),
+            nn.Conv2d(hidden_features * 2, out_features, kernel_size=1, padding=0, dilation=1, bias=True),
             ModuleHelper.BNReLU(out_features, bn_type=bn_type),
             nn.Dropout2d(dropout)
             )
