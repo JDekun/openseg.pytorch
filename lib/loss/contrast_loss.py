@@ -21,9 +21,10 @@ def sample_negative(Q, Q_label):
 
 
 def dequeue_and_enqueue_self_seri(keys, key_y, labels,
-                                encode_queue, encode_queue_ptr,
-                                code_queue_label):
-    memory_size = memory_size
+                                encode_queue, code_queue_label, encode_queue_ptr
+                                ):
+    memory_size = encode_queue.shape[1]
+    print(memory_size)
 
     iter =  len(labels)
     for i in range(iter):
