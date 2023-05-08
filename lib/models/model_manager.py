@@ -64,8 +64,8 @@ from lib.models.nets.contrast_resnet import RES_FCN_ASP_2_MEP
 from lib.models.nets.contrast_resnet import RES_FCN_ASP_1_MEP
 from lib.models.nets.contrast_resnet import RES_FCN_ASP_0_MEP
 from lib.models.nets.contrast_resnet import RES_OCR_ASP_0_MEP_IN
-from lib.models.nets.contrast_resnet import RES_OCR_ASP_0_MEP_AF
-from lib.models.nets.contrast_resnet import RES_OCR_ASP_0_MEP_BE
+# from lib.models.nets.contrast_resnet import RES_OCR_ASP_0_MEP_AF
+# from lib.models.nets.contrast_resnet import RES_OCR_ASP_0_MEP_BE
 
 
 from lib.utils.tools.logger import Logger as Log
