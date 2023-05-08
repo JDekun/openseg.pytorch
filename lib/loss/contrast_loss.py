@@ -53,7 +53,7 @@ def dequeue_and_enqueue_self_seri(keys, key_y, labels,
 
             code_queue_label[lb, ptr:ptr + K] = lbe
 
-def Contrastive(feats_x, feats_y, labels_, queue=None, queue_label=None, type: str = 'inter', temperature: float = 0.1, base_temperature: float = 0.07):
+def Contrastive(feats_x, feats_y, labels_, queue=None, queue_label=None, type: str = 'intra', temperature: float = 0.1, base_temperature: float = 0.07):
     anchor_num, n_view = feats_x.shape[0], feats_x.shape[1]
 
     feature_x = torch.cat(torch.unbind(feats_x, dim=1), dim=0)
@@ -70,7 +70,6 @@ def Contrastive(feats_x, feats_y, labels_, queue=None, queue_label=None, type: s
         anchor_count = n_view
         contrast_count = n_view
     elif type == "double":
-        # 默认采用 type == "double" 对比
         anchor_feature = torch.cat([feature_x, feature_y], dim=0)
         contrast_feature = anchor_feature
         anchor_count = n_view * 2
@@ -102,14 +101,18 @@ def Contrastive(feats_x, feats_y, labels_, queue=None, queue_label=None, type: s
     logits = anchor_dot_contrast - logits_max.detach()
     # logits = anchor_dot_contrast
 
-    # mask对角线logits(自身对比部分)
-    logits_mask = torch.ones_like(mask).scatter_(1,
-                                                torch.arange(anchor_num * anchor_count).view(-1, 1).cuda(),
-                                                0)
-    # 正样本mask
-    ops_mask = mask * logits_mask
-    if type == "inter":
+    if (type == "inter") or (queue is not None):
         ops_mask = mask
+        print("hello")
+    else:
+        # mask对角线logits(自身对比部分)
+        logits_mask = torch.ones_like(mask).scatter_(1,
+                                                    torch.arange(anchor_num * anchor_count).view(-1, 1).cuda(),
+                                                    0)
+        # 正样本mask
+        ops_mask = mask * logits_mask
+
+
     # 负样本mask
     neg_mask = 1 - mask
 
