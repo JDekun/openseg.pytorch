@@ -19,6 +19,7 @@ class Mep_Module(nn.Module):
         self.configer = configer
         self.proj_dim = self.configer.get("contrast", "proj_dim")
         self.projector = self.configer.get("contrast", "projector")
+        self.memory_size = self.configer.get("contrast", "memory_size")
 
 
         for layer in self.projector:
@@ -37,6 +38,10 @@ class Mep_Module(nn.Module):
                     nn.Conv2d(inout_dim, inout_dim, kernel_size=1, stride=1, padding=0, bias=True),
                     ModuleHelper.BNReLU(inout_dim, bn_type=self.configer.get("network", "bn_type")),
                     nn.Conv2d(inout_dim, self.proj_dim, kernel_size=1, stride=1, padding=0, bias=True),)
+                if self.memory_size:
+                    self.register_buffer(layer+"_queue", nn.functional.normalize(torch.randn(1, self.memory_size, self.proj_dim), p=2, dim=2))
+                    self.register_buffer(layer+"_queue_label", torch.randn(1, self.memory_size,  dtype=torch.long))
+                    self.register_buffer(layer+"_queue_ptr", torch.zeros(1, dtype=torch.long))
     
 
     def forward(self, feat):
@@ -52,7 +57,10 @@ class Mep_Module(nn.Module):
                 layer['layer_3'] = proj_layer3
             elif lay == 'layer_2':
                 proj_layer2 = F.normalize(self.projector_layer2(feat[0]), dim=1)
-                layer['layer_2'] = proj_layer2
+                queue_layer2 = None
+                if self.memory_size:
+                    queue_layer2 = [self.layer_2_queue, self.layer_2_queue_label, self.layer_2_queue_ptr]
+                layer['layer_2'] = [proj_layer2, queue_layer2]
 
         output["proj"] = layer
 
