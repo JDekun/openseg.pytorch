@@ -103,7 +103,6 @@ def Contrastive(feats_x, feats_y, labels_, queue=None, queue_label=None, type: s
 
     if (type == "inter") or (queue is not None):
         ops_mask = mask
-        print("hello")
     else:
         # mask对角线logits(自身对比部分)
         logits_mask = torch.ones_like(mask).scatter_(1,
