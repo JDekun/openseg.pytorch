@@ -468,7 +468,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--memory_size:",
         type=int,
-        default=0,
+        default=None,
         dest="contrast:memory_size",
         help="contrast:memory_size.",
     )
