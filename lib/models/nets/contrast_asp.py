@@ -48,7 +48,7 @@ class FCN_ASP_0_Mep(nn.Module):
         proj = self.mep_head(feat)     
         # mep
 
-        out = feat
+        out = feat1
 
         output = self.conv_bn_dropout(out)
         return output, proj
