@@ -465,6 +465,13 @@ if __name__ == "__main__":
         dest="contrast:contrast_type",
         help="contrast:contrast_type.",
     )
+    parser.add_argument(
+        "--memory_size:",
+        type=int,
+        default=0,
+        dest="contrast:memory_size",
+        help="contrast:memory_size.",
+    )
 
 
     # ***********  Params for env.  **********
