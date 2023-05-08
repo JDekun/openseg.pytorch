@@ -116,8 +116,8 @@ SEG_MODEL_DICT = {
     "resnet_fcn_asp1_mep": RES_FCN_ASP_1_MEP,
     "resnet_fcn_asp0_mep": RES_FCN_ASP_0_MEP,
     "resnet_ocr_asp0_mep_in": RES_OCR_ASP_0_MEP_IN,
-    "resnet_ocr_asp0_mep_af": RES_OCR_ASP_0_MEP_AF,
-    "resnet_ocr_asp0_mep_be": RES_OCR_ASP_0_MEP_BE,
+    # "resnet_ocr_asp0_mep_af": RES_OCR_ASP_0_MEP_AF,
+    # "resnet_ocr_asp0_mep_be": RES_OCR_ASP_0_MEP_BE,
 }
 
 
