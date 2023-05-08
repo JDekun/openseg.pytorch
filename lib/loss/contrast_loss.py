@@ -96,6 +96,8 @@ def Contrastive(feats_x, feats_y, labels_, queue=None, queue_label=None, type: s
         # 更新mask
         mask = mask_queue
 
+    print("mask", mask.shape)
+    print("contrast_feature", contrast_feature.shape)
 
     # 计算对比logits
     anchor_dot_contrast = torch.div(torch.matmul(anchor_feature, torch.transpose(contrast_feature, 0, 1)), temperature)
