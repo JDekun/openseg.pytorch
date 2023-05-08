@@ -40,7 +40,7 @@ class Mep_Module(nn.Module):
                     nn.Conv2d(inout_dim, self.proj_dim, kernel_size=1, stride=1, padding=0, bias=True),)
                 if self.memory_size:
                     self.register_buffer(layer+"_queue", nn.functional.normalize(torch.randn(1, self.memory_size, self.proj_dim), p=2, dim=2))
-                    self.register_buffer(layer+"_queue_label", torch.randint(0, 20, (1, self.memory_size),dtype=torch.long))
+                    self.register_buffer(layer+"_queue_label", torch.randint(0, 19, (1, self.memory_size),dtype=torch.long))
                     self.register_buffer(layer+"_queue_ptr", torch.zeros(1, dtype=torch.long))
     
 

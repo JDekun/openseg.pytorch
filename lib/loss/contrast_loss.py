@@ -24,7 +24,6 @@ def dequeue_and_enqueue_self_seri(keys, key_y, labels,
                                 encode_queue, code_queue_label, encode_queue_ptr
                                 ):
     memory_size = encode_queue.shape[1]
-    print(memory_size)
 
     iter =  len(labels)
     for i in range(iter):
@@ -87,14 +86,15 @@ def Contrastive(feats_x, feats_y, labels_, queue=None, queue_label=None, type: s
         queue_feature, queue_label = sample_negative(queue, queue_label) # 并行队列变形成串行
 
         # 增加queue特征
-        contrast_feature = torch.cat([contrast_feature, queue_feature], dim=0)
+        contrast_feature = queue_feature
 
         # 增加queue mask
         queue_label = queue_label.contiguous().view(-1, 1)
         mask_queue = torch.eq(labels_, torch.transpose(queue_label, 0, 1)).float().cuda()
         mask_queue = mask_queue.repeat(anchor_count, 1)
+
         # 更新mask
-        mask = torch.cat([mask, mask_queue], dim=1)
+        mask = mask_queue
 
 
     # 计算对比logits
