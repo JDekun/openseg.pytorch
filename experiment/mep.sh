@@ -10,7 +10,7 @@ BACKBONE="deepbase_resnet101_dilated8"
 CONFIGS="configs/cityscapes/R_101_D_8.json"
 CONFIGS_TEST="configs/cityscapes/R_101_D_8_TEST.json"
 
-MODEL_NAME="resnet_fcn_asp2_mep"
+MODEL_NAME="resnet_fcn_asp1_mep"
 LOSS_TYPE="fs_auxce_loss_dc"
 CHECKPOINTS_NAME="${MODEL_NAME}_${BACKBONE}_$(date +%F_%H-%M-%S)"
 LOG_FILE="./experiment/log/cityscapes/${CHECKPOINTS_NAME}.log"
