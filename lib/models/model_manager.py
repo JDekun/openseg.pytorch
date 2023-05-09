@@ -67,6 +67,7 @@ from lib.models.nets.contrast_resnet import RES_OCR_ASP_0_MEP_IN
 from lib.models.nets.contrast_resnet import RES_OCR_ASP_0_MEP_AF
 from lib.models.nets.contrast_resnet import RES_OCR_ASP_0_MEP_BE
 from lib.models.nets.contrast_resnet import RES_OCR_ASP_0
+from lib.models.nets.contrast_resnet import RES_FCN_ASP_0
 
 
 from lib.utils.tools.logger import Logger as Log
@@ -120,6 +121,7 @@ SEG_MODEL_DICT = {
     "resnet_ocr_asp0_mep_af": RES_OCR_ASP_0_MEP_AF,
     "resnet_ocr_asp0_mep_be": RES_OCR_ASP_0_MEP_BE,
     "resnet_ocr_asp0": RES_OCR_ASP_0,
+    "resnet_fcn_asp0": RES_FCN_ASP_0,
 }
 
 
