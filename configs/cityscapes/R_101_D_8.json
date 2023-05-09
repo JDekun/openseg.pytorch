@@ -11,9 +11,10 @@
   },
   "contrast":{
     "proj_dim": 128,
-    "projector": ["layer_2", "layer_3"],
-    "loss_weights": [0, 0.1, 0.1, 0],
-    "contrast_type": "intra" 
+    "projector": ["layer_1"],
+    "loss_weights": [0.1, 0.1, 0.1, 0.1],
+    "contrast_type": "intra" ,
+    "memory_size": 0
   },
  "train": {
     "batch_size": 16,

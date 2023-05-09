@@ -17,91 +17,13 @@ def sample_negative(Q, Q_label):
         y_[sample_ptr:sample_ptr + cache_size, :] = torch.transpose(Q_label, 0, 1)
         sample_ptr += cache_size
 
-    return X_, y_
+    return X_, y_ 
 
-def dequeue_and_enqueue(args, keys, key_y, labels,
-                        encode_queue, encode_queue_ptr,
-                        decode_queue, decode_queue_ptr):
-    batch_size = keys.shape[0]
-    feat_dim = keys.shape[1]
 
-    labels = labels[:, ::args.network_stride, ::args.network_stride]
-    memory_size = memory_size
-
-    for bs in range(batch_size):
-        this_feat = keys[bs].contiguous().view(feat_dim, -1)
-        this_feat_y = key_y[bs].contiguous().view(feat_dim, -1)
-        this_label = labels[bs].contiguous().view(-1)
-        this_label_ids = torch.unique(this_label)
-        this_label_ids = [x for x in this_label_ids if x != 255]
-
-        for lb in this_label_ids:
-            idxs = (this_label == lb).nonzero()
-
-            # pixel enqueue and dequeue
-            num_pixel = idxs.shape[0]
-            perm = torch.randperm(num_pixel)
-            K = min(num_pixel, args.pixel_update_freq)
-            # feat = feat[:, perm[:K]]
-            feat = this_feat[:, perm[:K]]
-            feat = torch.transpose(feat, 0, 1)
-            feat_y = this_feat_y[:, perm[:K]]
-            feat_y = torch.transpose(feat_y, 0, 1)
-            ptr = int(decode_queue_ptr[lb])
-
-            if ptr + K > memory_size:
-                total = ptr + K
-                start = total - memory_size
-                end = K - start
-
-                encode_queue[lb, ptr:memory_size, :] = nn.functional.normalize(feat[0:end], p=2, dim=1)
-                encode_queue[lb, 0:start, :] = nn.functional.normalize(feat[end:], p=2, dim=1)
-                encode_queue_ptr[lb] = start
-                decode_queue[lb, ptr:memory_size, :] = nn.functional.normalize(feat_y[0:end], p=2, dim=1)
-                decode_queue[lb, 0:start, :] = nn.functional.normalize(feat_y[end:], p=2, dim=1)
-                decode_queue_ptr[lb] = start
-            else:
-                encode_queue[lb, ptr:ptr + K, :] = nn.functional.normalize(feat, p=2, dim=1)
-                encode_queue_ptr[lb] = (encode_queue_ptr[lb] + K) % memory_size
-                decode_queue[lb, ptr:ptr + K, :] = nn.functional.normalize(feat_y, p=2, dim=1)
-                decode_queue_ptr[lb] = (decode_queue_ptr[lb] + K) % memory_size
-
-def dequeue_and_enqueue_self(args, keys, key_y, labels,
-                            encode_queue, encode_queue_ptr,
-                            decode_queue, decode_queue_ptr):
-    memory_size = memory_size
-
-    iter =  len(labels)
-    for i in range(iter):
-        lb = int(labels[i])
-        feat = keys[i]
-        feat_y = key_y[i]
-        K = feat.shape[0]
-
-        ptr = int(decode_queue_ptr[lb])
-
-        if ptr + K > memory_size:
-            total = ptr + K
-            start = total - memory_size
-            end = K - start
-
-            encode_queue[lb, ptr:memory_size, :] = nn.functional.normalize(feat[0:end], p=2, dim=1)
-            encode_queue[lb, 0:start, :] = nn.functional.normalize(feat[end:], p=2, dim=1)
-            encode_queue_ptr[lb] = start
-            decode_queue[lb, ptr:memory_size, :] = nn.functional.normalize(feat_y[0:end], p=2, dim=1)
-            decode_queue[lb, 0:start, :] = nn.functional.normalize(feat_y[end:], p=2, dim=1)
-            decode_queue_ptr[lb] = start
-
-        else:
-            encode_queue[lb, ptr:ptr + K, :] = nn.functional.normalize(feat, p=2, dim=1)
-            encode_queue_ptr[lb] = (encode_queue_ptr[lb] + K) % memory_size
-            decode_queue[lb, ptr:ptr + K, :] = nn.functional.normalize(feat_y, p=2, dim=1)
-            decode_queue_ptr[lb] = (decode_queue_ptr[lb] + K) % memory_size
-
-def dequeue_and_enqueue_self_seri(args, keys, key_y, labels,
-                                encode_queue, encode_queue_ptr,
-                                code_queue_label):
-    memory_size = memory_size
+def dequeue_and_enqueue_self_seri(keys, key_y, labels,
+                                encode_queue, code_queue_label, encode_queue_ptr
+                                ):
+    memory_size = encode_queue.shape[1]
 
     iter =  len(labels)
     for i in range(iter):
@@ -118,20 +40,20 @@ def dequeue_and_enqueue_self_seri(args, keys, key_y, labels,
             start = total - memory_size
             end = K - start
 
-            encode_queue[lb, ptr:memory_size, :] = nn.functional.normalize(feat[0:end], p=2, dim=1)
-            encode_queue[lb, 0:start, :] = nn.functional.normalize(feat[end:], p=2, dim=1)
+            encode_queue[lb, ptr:memory_size, :] = feat[0:end]
+            encode_queue[lb, 0:start, :] = feat[end:]
             encode_queue_ptr[lb] = start
 
             code_queue_label[lb, ptr:memory_size] = lbe
             code_queue_label[lb, 0:start] = lbe
 
         else:
-            encode_queue[lb, ptr:ptr + K, :] = nn.functional.normalize(feat, p=2, dim=1)
+            encode_queue[lb, ptr:ptr + K, :] = feat
             encode_queue_ptr[lb] = (encode_queue_ptr[lb] + K) % memory_size
 
             code_queue_label[lb, ptr:ptr + K] = lbe
 
-def Contrastive(feats_x, feats_y, labels_, queue=None, queue_label=None, type: str = 'inter', temperature: float = 0.1, base_temperature: float = 0.07):
+def Contrastive(feats_x, feats_y, labels_, queue=None, queue_label=None, type: str = 'intra', temperature: float = 0.1, base_temperature: float = 0.07):
     anchor_num, n_view = feats_x.shape[0], feats_x.shape[1]
 
     feature_x = torch.cat(torch.unbind(feats_x, dim=1), dim=0)
@@ -148,7 +70,6 @@ def Contrastive(feats_x, feats_y, labels_, queue=None, queue_label=None, type: s
         anchor_count = n_view
         contrast_count = n_view
     elif type == "double":
-        # 默认采用 type == "double" 对比
         anchor_feature = torch.cat([feature_x, feature_y], dim=0)
         contrast_feature = anchor_feature
         anchor_count = n_view * 2
@@ -164,15 +85,15 @@ def Contrastive(feats_x, feats_y, labels_, queue=None, queue_label=None, type: s
         queue_feature, queue_label = sample_negative(queue, queue_label) # 并行队列变形成串行
 
         # 增加queue特征
-        contrast_feature = torch.cat([contrast_feature, queue_feature], dim=0)
+        contrast_feature = queue_feature
 
         # 增加queue mask
         queue_label = queue_label.contiguous().view(-1, 1)
         mask_queue = torch.eq(labels_, torch.transpose(queue_label, 0, 1)).float().cuda()
         mask_queue = mask_queue.repeat(anchor_count, 1)
-        # 更新mask
-        mask = torch.cat([mask, mask_queue], dim=1)
 
+        # 更新mask
+        mask = mask_queue
 
     # 计算对比logits
     anchor_dot_contrast = torch.div(torch.matmul(anchor_feature, torch.transpose(contrast_feature, 0, 1)), temperature)
@@ -180,14 +101,17 @@ def Contrastive(feats_x, feats_y, labels_, queue=None, queue_label=None, type: s
     logits = anchor_dot_contrast - logits_max.detach()
     # logits = anchor_dot_contrast
 
-    # mask对角线logits(自身对比部分)
-    logits_mask = torch.ones_like(mask).scatter_(1,
-                                                torch.arange(anchor_num * anchor_count).view(-1, 1).cuda(),
-                                                0)
-    # 正样本mask
-    ops_mask = mask * logits_mask
-    if type == "inter":
+    if (type == "inter") or (queue is not None):
         ops_mask = mask
+    else:
+        # mask对角线logits(自身对比部分)
+        logits_mask = torch.ones_like(mask).scatter_(1,
+                                                    torch.arange(anchor_num * anchor_count).view(-1, 1).cuda(),
+                                                    0)
+        # 正样本mask
+        ops_mask = mask * logits_mask
+
+
     # 负样本mask
     neg_mask = 1 - mask
 
@@ -214,6 +138,7 @@ def Contrastive(feats_x, feats_y, labels_, queue=None, queue_label=None, type: s
 def CONTRAST_Loss(cls_score,
                 decode,
                 layer,
+                queue_origin,
                 labels,
                 memory_size = 0,
                 sample = 'weight_ade_8',
@@ -233,20 +158,13 @@ def CONTRAST_Loss(cls_score,
     labels = labels.squeeze(1).long()
     assert labels.shape[-1] == feats.shape[-1], '{} {}'.format(labels.shape, feats.shape)
 
-    queue=None
-    queue_label=None
-    # if memory_size:
-    #     queue_origin = x[2]
-    #     # queue = queue_origin
+    if memory_size:
+        queue = queue_origin[0]
+        queue_label = queue_origin[1]
+    else:
+        queue=None
+        queue_label=None
 
-    #     if "encode_queue" in queue_origin:
-    #         encode_queue = queue_origin['encode_queue']
-    #         encode_queue_label = queue_origin['code_queue_label']
-    #     else:
-    #         encode_queue = None
-
-    #     queue = encode_queue
-    #     queue_label = encode_queue_label
 
     batch_size = feats.shape[0]
 
@@ -263,11 +181,11 @@ def CONTRAST_Loss(cls_score,
 
     if feats_ != None:
         loss = Contrastive(feats_, feats_y_, labels_, queue,  queue_label, contrast_type)
-        # if memory_size:
-        #     dequeue_and_enqueue_self_seri(args, feats_que_, feats_y_que_, labels_queue_,
-        #                                     encode_queue=queue_origin['encode_queue'],
-        #                                     encode_queue_ptr=queue_origin['encode_queue_ptr'],
-        #                                     code_queue_label=queue_origin['code_queue_label'])
+        if memory_size:
+            dequeue_and_enqueue_self_seri(feats_que_, feats_y_que_, labels_queue_,
+                                            encode_queue=queue_origin[0],
+                                            code_queue_label=queue_origin[1],
+                                            encode_queue_ptr=queue_origin[2])
     else:
         loss = 0
 

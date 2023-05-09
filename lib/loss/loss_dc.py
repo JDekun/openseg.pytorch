@@ -255,23 +255,27 @@ class FSAuxCELossDC(nn.Module):
         seg_loss = self.ce_loss(seg_out, targets)
         aux_loss = self.ce_loss(aux_out, targets)
         
+        # contrast
         cls_score = seg_out
         conX=None
-        if len(proj)==2:
+        if "decode" in proj:
             conX = proj['decode']
         los_con = 0
+        memory_size = self.configer.get("contrast", "memory_size")
         for name, conY in proj['proj'].items():
             index = int(name.split("_")[-1]) - 1
             weight = self.configer.get("contrast", "loss_weights")[index]
             con = CONTRAST_Loss(
                 cls_score,
                 conX,
-                conY,
+                conY[0],
+                conY[1],
                 targets,
-                memory_size = 0,
+                memory_size,
                 sample = 'weight_ade_8',
                 contrast_type = self.configer.get("contrast", "contrast_type"))
             los_con = los_con + weight * con
+        # contrast
 
         loss = self.configer.get("network", "loss_weights")["seg_loss"] * seg_loss
         loss = loss + los_con
