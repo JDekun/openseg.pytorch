@@ -34,25 +34,25 @@ def dequeue_and_enqueue_self_seri(keys, key_y, labels,
         K = feat.shape[0]
 
         ptr = int(encode_queue_ptr[lb])
-        print(ptr)
 
-        # if ptr + K > memory_size:
-        #     total = ptr + K
-        #     start = total - memory_size
-        #     end = K - start
+        if ptr + K > memory_size:
+            print(ptr)
+            total = ptr + K
+            start = total - memory_size
+            end = K - start
 
-        #     encode_queue[lb, ptr:memory_size, :] = feat[0:end]
-        #     encode_queue[lb, 0:start, :] = feat[end:]
-        #     encode_queue_ptr[lb] = start
+            encode_queue[lb, ptr:memory_size, :] = feat[0:end]
+            encode_queue[lb, 0:start, :] = feat[end:]
+            encode_queue_ptr[lb] = start
 
-        #     code_queue_label[lb, ptr:memory_size] = lbe
-        #     code_queue_label[lb, 0:start] = lbe
+            code_queue_label[lb, ptr:memory_size] = lbe
+            code_queue_label[lb, 0:start] = lbe
 
-        # else:
-        encode_queue[lb, ptr:ptr + K, :] = feat
-        encode_queue_ptr[lb] = (encode_queue_ptr[lb] + K) % memory_size
+        else:
+            encode_queue[lb, ptr:ptr + K, :] = feat
+            encode_queue_ptr[lb] = (encode_queue_ptr[lb] + K) % memory_size
 
-        code_queue_label[lb, ptr:ptr + K] = lbe
+            code_queue_label[lb, ptr:ptr + K] = lbe
 
 def Contrastive(feats_x, feats_y, labels_, queue=None, queue_label=None, type: str = 'intra', temperature: float = 0.1, base_temperature: float = 0.07):
     anchor_num, n_view = feats_x.shape[0], feats_x.shape[1]
