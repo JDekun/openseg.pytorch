@@ -34,10 +34,10 @@ def dequeue_and_enqueue_self_seri(keys, key_y, labels,
         K = feat.shape[0]
 
         ptr = int(encode_queue_ptr[lb])
+        print(ptr)
 
         if ptr + K > memory_size:
             total = ptr + K
-            print(total)
             start = total - memory_size
             end = K - start
 
