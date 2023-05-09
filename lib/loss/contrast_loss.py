@@ -36,7 +36,6 @@ def dequeue_and_enqueue_self_seri(keys, key_y, labels,
         ptr = int(encode_queue_ptr[lb])
 
         if ptr + K > memory_size:
-            print(ptr)
             total = ptr + K
             start = total - memory_size
             end = K - start
