@@ -25,11 +25,6 @@ def dequeue_and_enqueue_self_seri(keys, key_y, labels,
                                 ):
     memory_size = encode_queue.shape[1]
 
-    print("keys", keys.shape)
-    print("key_y", key_y.shape)
-    print("labels", labels.shape)
-    print("len(labels)", len(labels))
-
     iter =  len(labels)
     for i in range(iter):
         lb = 0
@@ -42,6 +37,7 @@ def dequeue_and_enqueue_self_seri(keys, key_y, labels,
 
         if ptr + K > memory_size:
             total = ptr + K
+            print(total)
             start = total - memory_size
             end = K - start
 
