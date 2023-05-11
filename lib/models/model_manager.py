@@ -66,6 +66,8 @@ from lib.models.nets.contrast_resnet import RES_FCN_ASP_0_MEP
 from lib.models.nets.contrast_resnet import RES_OCR_ASP_0_MEP_IN
 from lib.models.nets.contrast_resnet import RES_OCR_ASP_0_MEP_AF
 from lib.models.nets.contrast_resnet import RES_OCR_ASP_0_MEP_BE
+from lib.models.nets.contrast_resnet import RES_OCR_ASP_0
+from lib.models.nets.contrast_resnet import RES_FCN_ASP_0
 
 
 from lib.utils.tools.logger import Logger as Log
@@ -111,13 +113,15 @@ SEG_MODEL_DICT = {
     "resnet_ocr_asp": RES_OCR_ASP,
     "resnet_fcn_asp": RES_FCN_ASP,
     "resnet_fcn_asp3": RES_FCN_ASP_3,
-    "resnet_fcn_asp3_mep": RES_FCN_ASP_3_MEP,
-    "resnet_fcn_asp2_mep": RES_FCN_ASP_2_MEP,
-    "resnet_fcn_asp1_mep": RES_FCN_ASP_1_MEP,
+    "resnet_fcn_asp03_mep": RES_FCN_ASP_3_MEP,
+    "resnet_fcn_asp02_mep": RES_FCN_ASP_2_MEP,
+    "resnet_fcn_asp01_mep": RES_FCN_ASP_1_MEP,
     "resnet_fcn_asp0_mep": RES_FCN_ASP_0_MEP,
     "resnet_ocr_asp0_mep_in": RES_OCR_ASP_0_MEP_IN,
     "resnet_ocr_asp0_mep_af": RES_OCR_ASP_0_MEP_AF,
     "resnet_ocr_asp0_mep_be": RES_OCR_ASP_0_MEP_BE,
+    "resnet_ocr_asp0": RES_OCR_ASP_0,
+    "resnet_fcn_asp0": RES_FCN_ASP_0,
 }
 
 
