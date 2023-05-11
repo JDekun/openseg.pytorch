@@ -10,9 +10,10 @@ BACKBONE="deepbase_resnet101_dilated8"
 CONFIGS="configs/cityscapes/R_101_D_8.json"
 CONFIGS_TEST="configs/cityscapes/R_101_D_8_TEST.json"
 
-MODEL_NAME="resnet_ocr_asp0_mep_be"
+MODEL_NAME="resnet_ocr_asp0_mep_af"
 LOSS_TYPE="fs_auxce_loss_dc"
-CHECKPOINTS_NAME="${MODEL_NAME}_${BACKBONE}_$(date +%F_%H-%M-%S)"
+MEMORY_SIZE=16384
+CHECKPOINTS_NAME="${MODEL_NAME}${MEMORY_SIZE}_${BACKBONE}_$(date +%F_%H-%M-%S)"
 LOG_FILE="./experiment/log/cityscapes/${CHECKPOINTS_NAME}.log"
 echo "Logging to $LOG_FILE"
 mkdir -p `dirname $LOG_FILE`
@@ -32,6 +33,8 @@ if [ "$1"x == "train"x ]; then
                        --gpu 3 4 5 6  \
                        --train_batch_size 8\
                        --val_batch_size 4 \
+                       --memory_size ${MEMORY_SIZE}\
+                       --projector "layer_1" \
                        --data_dir ${DATA_DIR} \
                        --loss_type ${LOSS_TYPE} \
                        --max_iters ${MAX_ITERS} \
