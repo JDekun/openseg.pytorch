@@ -10,6 +10,69 @@ from lib.models.tools.module_helper import ModuleHelper
 
 from lib.models.modules.spatial_ocr_block import SpatialGather_Module
 
+
+class DEEPLABV3_ASP_MEP_BE(nn.Module):
+    def __init__(self, configer, features, hidden_features=256, out_features=512, dilations=(12, 24, 36), num_classes=19, bn_type=None, dropout=0.1):
+        super(DEEPLABV3_ASP_MEP_BE, self).__init__()
+        self.conv1 = nn.Sequential(nn.AdaptiveAvgPool2d(1),
+                                    nn.Conv2d(features, hidden_features, kernel_size=1,padding=0, bias=True),
+                                    ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
+        self.conv2 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=1, padding=0, dilation=1, bias=True),
+                                   ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
+        self.conv3 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=3, padding=dilations[0], dilation=dilations[0], bias=True),
+                                   ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
+        self.conv4 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=3, padding=dilations[1], dilation=dilations[1], bias=True),
+                                   ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
+        self.conv5 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=3, padding=dilations[2], dilation=dilations[2], bias=True),
+                                   ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
+        self.conv_bn_dropout = nn.Sequential(
+            nn.Conv2d(hidden_features * 5, out_features, kernel_size=1, padding=0, dilation=1, bias=True),
+            ModuleHelper.BNReLU(out_features, bn_type=bn_type),
+            nn.Dropout2d(dropout)
+            )
+        
+        # mep
+        from lib.models.nets.contrast_mep import Mep_Module
+        self.mep_head = Mep_Module(configer, features)
+
+    def _cat_each(self, feat1, feat2, feat3, feat4, feat5):
+        assert(len(feat1)==len(feat2))
+        z = []
+        for i in range(len(feat1)):
+            z.append(torch.cat((feat1[i], feat2[i], feat3[i], feat4[i], feat5[i]), 1))
+        return z
+
+    def forward(self, x):
+        if isinstance(x, Variable):
+            _, _, h, w = x.size()
+        elif isinstance(x, tuple) or isinstance(x, list):
+            _, _, h, w = x[0].size()
+        else:
+            raise RuntimeError('unknown input type')
+
+        feat1 = F.interpolate(self.conv1(x), size=(h, w), mode='bilinear',
+                              align_corners=True)
+
+        feat2 = self.conv2(x)
+        feat3 = self.conv3(x)
+        feat4 = self.conv4(x)
+        feat5 = self.conv5(x)
+
+        # mep
+        feat = [x]
+        proj = self.mep_head(feat)     
+        # mep
+
+        if isinstance(x, Variable):
+            out = torch.cat((feat1, feat2, feat3, feat4, feat5), 1)
+        elif isinstance(x, tuple) or isinstance(x, list):
+            out = self._cat_each(feat1, feat2, feat3, feat4, feat5)
+        else:
+            raise RuntimeError('unknown input type')
+
+        output = self.conv_bn_dropout(out)
+        return output, proj
+
 class OCR_ASP_0_MEP_BE(nn.Module):
     def __init__(self, configer, features, hidden_features=256, out_features=512, dilations=(12, 24, 36), num_classes=19, bn_type=None, dropout=0.1):
         super(OCR_ASP_0_MEP_BE, self).__init__()
