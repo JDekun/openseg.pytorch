@@ -10,9 +10,9 @@ from lib.models.tools.module_helper import ModuleHelper
 
 from lib.models.modules.spatial_ocr_block import SpatialGather_Module
 
-class DEEPLABV3_ASP_MEP_AF(nn.Module):
+class DEEPLABV3_ASP_MEP_IN(nn.Module):
     def __init__(self, configer, features, hidden_features=256, out_features=512, dilations=(12, 24, 36), num_classes=19, bn_type=None, dropout=0.1):
-        super(DEEPLABV3_ASP_MEP_AF, self).__init__()
+        super(DEEPLABV3_ASP_MEP_IN, self).__init__()
         self.conv1 = nn.Sequential(nn.AdaptiveAvgPool2d(1),
                                     nn.Conv2d(features, hidden_features, kernel_size=1,padding=0, bias=True),
                                     ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
@@ -32,7 +32,7 @@ class DEEPLABV3_ASP_MEP_AF(nn.Module):
         
         # mep
         from lib.models.nets.contrast_mep import Mep_Module
-        self.mep_head = Mep_Module(configer, hidden_features)
+        self.mep_head = Mep_Module(configer, hidden_features * 5)
 
     def _cat_each(self, feat1, feat2, feat3, feat4, feat5):
         assert(len(feat1)==len(feat2))
@@ -67,7 +67,7 @@ class DEEPLABV3_ASP_MEP_AF(nn.Module):
         output = self.conv_bn_dropout(out)
 
         # mep
-        feat = [output]
+        feat = [out]
         proj = self.mep_head(feat)     
         # mep
         
