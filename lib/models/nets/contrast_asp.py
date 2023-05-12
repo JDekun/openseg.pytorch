@@ -13,9 +13,9 @@ from lib.models.modules.spatial_ocr_block import SpatialGather_Module
 class DEEPLABV3_ASP_MEP_IN(nn.Module):
     def __init__(self, configer, features, hidden_features=256, out_features=512, dilations=(12, 24, 36), num_classes=19, bn_type=None, dropout=0.1):
         super(DEEPLABV3_ASP_MEP_IN, self).__init__()
-        self.conv1 = nn.Sequential(nn.AdaptiveAvgPool2d(1),
-                                    nn.Conv2d(features, hidden_features, kernel_size=1,padding=0, bias=True),
-                                    ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
+        self.conv1 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=3, padding=1, dilation=1, bias=True),
+                                     ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),
+                                    )
         self.conv2 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=1, padding=0, dilation=1, bias=True),
                                    ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
         self.conv3 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=3, padding=dilations[0], dilation=dilations[0], bias=True),
@@ -49,8 +49,7 @@ class DEEPLABV3_ASP_MEP_IN(nn.Module):
         else:
             raise RuntimeError('unknown input type')
 
-        feat1 = F.interpolate(self.conv1(x), size=(h, w), mode='bilinear',
-                              align_corners=True)
+        feat1 = self.conv1(x)
 
         feat2 = self.conv2(x)
         feat3 = self.conv3(x)
@@ -76,9 +75,9 @@ class DEEPLABV3_ASP_MEP_IN(nn.Module):
 class DEEPLABV3_ASP_MEP_AF(nn.Module):
     def __init__(self, configer, features, hidden_features=256, out_features=512, dilations=(12, 24, 36), num_classes=19, bn_type=None, dropout=0.1):
         super(DEEPLABV3_ASP_MEP_AF, self).__init__()
-        self.conv1 = nn.Sequential(nn.AdaptiveAvgPool2d(1),
-                                    nn.Conv2d(features, hidden_features, kernel_size=1,padding=0, bias=True),
-                                    ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
+        self.conv1 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=3, padding=1, dilation=1, bias=True),
+                                     ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),
+                                    )
         self.conv2 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=1, padding=0, dilation=1, bias=True),
                                    ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
         self.conv3 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=3, padding=dilations[0], dilation=dilations[0], bias=True),
@@ -112,8 +111,7 @@ class DEEPLABV3_ASP_MEP_AF(nn.Module):
         else:
             raise RuntimeError('unknown input type')
 
-        feat1 = F.interpolate(self.conv1(x), size=(h, w), mode='bilinear',
-                              align_corners=True)
+        feat1 = self.conv1(x)
 
         feat2 = self.conv2(x)
         feat3 = self.conv3(x)
@@ -139,9 +137,9 @@ class DEEPLABV3_ASP_MEP_AF(nn.Module):
 class DEEPLABV3_ASP_MEP_BE(nn.Module):
     def __init__(self, configer, features, hidden_features=256, out_features=512, dilations=(12, 24, 36), num_classes=19, bn_type=None, dropout=0.1):
         super(DEEPLABV3_ASP_MEP_BE, self).__init__()
-        self.conv1 = nn.Sequential(nn.AdaptiveAvgPool2d(1),
-                                    nn.Conv2d(features, hidden_features, kernel_size=1,padding=0, bias=True),
-                                    ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
+        self.conv1 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=3, padding=1, dilation=1, bias=True),
+                                     ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),
+                                    )
         self.conv2 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=1, padding=0, dilation=1, bias=True),
                                    ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
         self.conv3 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=3, padding=dilations[0], dilation=dilations[0], bias=True),
@@ -175,8 +173,7 @@ class DEEPLABV3_ASP_MEP_BE(nn.Module):
         else:
             raise RuntimeError('unknown input type')
 
-        feat1 = F.interpolate(self.conv1(x), size=(h, w), mode='bilinear',
-                              align_corners=True)
+        feat1 = self.conv1(x)
 
         feat2 = self.conv2(x)
         feat3 = self.conv3(x)
@@ -711,12 +708,12 @@ class FCN_ASP_3(nn.Module):
 class DEEPLABV3_ASP(nn.Module):
     def __init__(self, configer, features, hidden_features=256, out_features=512, dilations=(12, 24, 36), num_classes=19, bn_type=None, dropout=0.1):
         super(DEEPLABV3_ASP, self).__init__()
-        self.conv1 = nn.Sequential(nn.AdaptiveAvgPool2d(1),
-                                    nn.Conv2d(features, hidden_features, kernel_size=1, bias=False),
-                                    ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
-        # self.conv1 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=3, padding=1, dilation=1, bias=True),
-        #                              ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),
-        #                             )
+        # self.conv1 = nn.Sequential(nn.AdaptiveAvgPool2d(1),
+        #                             nn.Conv2d(features, hidden_features, kernel_size=1, bias=False),
+        #                             ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
+        self.conv1 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=3, padding=1, dilation=1, bias=True),
+                                     ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),
+                                    )
         self.conv2 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=1, padding=0, dilation=1, bias=True),
                                    ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
         self.conv3 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=3, padding=dilations[0], dilation=dilations[0], bias=True),
@@ -746,9 +743,9 @@ class DEEPLABV3_ASP(nn.Module):
         else:
             raise RuntimeError('unknown input type')
 
-        feat1 = F.interpolate(self.conv1(x), size=(h, w), mode='bilinear',
-                              align_corners=False)
-        # feat1 = self.conv1(x)
+        # feat1 = F.interpolate(self.conv1(x), size=(h, w), mode='bilinear',
+        #                       align_corners=False)
+        feat1 = self.conv1(x)
 
         feat2 = self.conv2(x)
         feat3 = self.conv3(x)
