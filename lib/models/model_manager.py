@@ -131,7 +131,7 @@ SEG_MODEL_DICT = {
     "resnet_deeplabv3_asp_mep_be": RES_DEEPLABV3_ASP_MEP_BE,
     "resnet_deeplabv3_asp_mep_af": RES_DEEPLABV3_ASP_MEP_AF,
     "resnet_deeplabv3_asp_mep_in": RES_DEEPLABV3_ASP_MEP_IN,
-    'deeplab_v3': DeepLabV3,
+    'deeplabv3': DeepLabV3,
 
 }
 
