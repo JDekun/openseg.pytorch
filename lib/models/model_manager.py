@@ -74,6 +74,8 @@ from lib.models.nets.contrast_resnet import RES_DEEPLABV3_ASP_MEP_AF
 from lib.models.nets.contrast_resnet import RES_DEEPLABV3_ASP_MEP_IN
 from lib.models.nets.deeplab import DeepLabV3
 from lib.models.nets.deeplab_mep_be import DeepLabV3_MEP_BE
+from lib.models.nets.deeplab_mep_af import DeepLabV3_MEP_AF
+from lib.models.nets.deeplab_mep_in import DeepLabV3_MEP_IN
 
 
 from lib.utils.tools.logger import Logger as Log
@@ -134,6 +136,8 @@ SEG_MODEL_DICT = {
     "resnet_deeplabv3_asp_mep_in": RES_DEEPLABV3_ASP_MEP_IN,
     'deeplabv3': DeepLabV3,
     'deeplabv3_mep_be': DeepLabV3_MEP_BE,
+    'deeplabv3_mep_af': DeepLabV3_MEP_AF,
+    'deeplabv3_mep_in': DeepLabV3_MEP_IN,
 
 }
 
