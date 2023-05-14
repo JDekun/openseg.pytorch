@@ -108,6 +108,11 @@ SEG_MODEL_DICT = {
     "ce2p_ideal_ocrnet": CE2P_IdealOCRNet,
     # baseline series
     "fcnet": FcnNet,
+    # deeplabv3
+    'deeplabv3': DeepLabV3,
+    'deeplabv3_mep_be': DeepLabV3_MEP_BE,
+    'deeplabv3_mep_af': DeepLabV3_MEP_AF,
+    'deeplabv3_mep_in': DeepLabV3_MEP_IN,
     # dcnet
     "spatial_ocrnet_dc": SpatialOCRNetDC,
     "fcnet_dc": FcnNetDC,
@@ -134,11 +139,6 @@ SEG_MODEL_DICT = {
     "resnet_deeplabv3_asp_mep_be": RES_DEEPLABV3_ASP_MEP_BE,
     "resnet_deeplabv3_asp_mep_af": RES_DEEPLABV3_ASP_MEP_AF,
     "resnet_deeplabv3_asp_mep_in": RES_DEEPLABV3_ASP_MEP_IN,
-    'deeplabv3': DeepLabV3,
-    'deeplabv3_mep_be': DeepLabV3_MEP_BE,
-    'deeplabv3_mep_af': DeepLabV3_MEP_AF,
-    'deeplabv3_mep_in': DeepLabV3_MEP_IN,
-
 }
 
 
