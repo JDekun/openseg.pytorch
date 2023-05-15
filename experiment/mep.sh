@@ -10,7 +10,7 @@ BACKBONE="deepbase_resnet101_dilated8"
 CONFIGS="configs/cityscapes/R_101_D_8.json"
 CONFIGS_TEST="configs/cityscapes/R_101_D_8_TEST.json"
 
-MODEL_NAME="resnet_deeplabv3_asp_mep_be"
+MODEL_NAME="resnet_fcn_asp3_mep"
 LOSS_TYPE="fs_auxce_loss_dc"
 MEMORY_SIZE=16384
 CHECKPOINTS_NAME="${MODEL_NAME}${MEMORY_SIZE}_${BACKBONE}_$(date +%F_%H-%M-%S)"
@@ -34,7 +34,7 @@ if [ "$1"x == "train"x ]; then
                        --train_batch_size 8\
                        --val_batch_size 4 \
                        --memory_size ${MEMORY_SIZE}\
-                       --projector "layer_1" \
+                       --projector "layer_2" "layer_3" "layer_4"\
                        --data_dir ${DATA_DIR} \
                        --loss_type ${LOSS_TYPE} \
                        --max_iters ${MAX_ITERS} \
