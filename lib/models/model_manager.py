@@ -59,6 +59,7 @@ from lib.models.nets.contrast_hrnet import HRNet_W48_ASPOCR_MLM
 from lib.models.nets.contrast_resnet import RES_OCR_ASP
 from lib.models.nets.contrast_resnet import RES_FCN_ASP
 from lib.models.nets.contrast_resnet import RES_FCN_ASP_3
+from lib.models.nets.contrast_resnet import RES_FCN_ASP_4_MEP
 from lib.models.nets.contrast_resnet import RES_FCN_ASP_3_MEP
 from lib.models.nets.contrast_resnet import RES_FCN_ASP_2_MEP
 from lib.models.nets.contrast_resnet import RES_FCN_ASP_1_MEP
@@ -126,6 +127,7 @@ SEG_MODEL_DICT = {
     "resnet_ocr_asp": RES_OCR_ASP,
     "resnet_fcn_asp": RES_FCN_ASP,
     "resnet_fcn_asp3": RES_FCN_ASP_3,
+    "resnet_fcn_asp4_mep": RES_FCN_ASP_4_MEP,
     "resnet_fcn_asp3_mep": RES_FCN_ASP_3_MEP,
     "resnet_fcn_asp2_mep": RES_FCN_ASP_2_MEP,
     "resnet_fcn_asp1_mep": RES_FCN_ASP_1_MEP,
