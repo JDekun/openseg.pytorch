@@ -139,8 +139,7 @@ class FSCELoss(nn.Module):
 
     @staticmethod
     def _scale_target(targets_, scaled_size):
-        print("targets_", targets_.shape)
-        targets = targets_.clone().unsqueeze(1).float()
+        # targets = targets_.clone().unsqueeze(1).float()
         targets = F.interpolate(targets, size=scaled_size, mode="nearest")
         return targets.squeeze(1).long()
 
