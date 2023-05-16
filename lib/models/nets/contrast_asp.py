@@ -593,7 +593,7 @@ class FCN_ASP_4_Mep(nn.Module):
         self.fcn = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=3, padding=1, dilation=1, bias=True),
                                      ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),
                                     )
-        self.conv2 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=3, padding=48, dilation=dilations[0], bias=True),
+        self.conv2 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=3, padding=48, dilation=48, bias=True),
                                    ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
         self.conv3 = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=3, padding=dilations[0], dilation=dilations[0], bias=True),
                                    ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),)
