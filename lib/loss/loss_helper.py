@@ -132,6 +132,7 @@ class FSCELoss(nn.Module):
                     loss += weights[i] * self.ce_loss(inputs[i], target)
 
         else:
+            print("target", target.shape)
             target = self._scale_target(targets[0], (inputs.size(2), inputs.size(3)))
             loss = self.ce_loss(inputs, target)
 
@@ -139,6 +140,7 @@ class FSCELoss(nn.Module):
 
     @staticmethod
     def _scale_target(targets_, scaled_size):
+        print("targets_", targets_.shape)
         targets = targets_.clone().unsqueeze(1).float()
         targets = F.interpolate(targets, size=scaled_size, mode="nearest")
         return targets.squeeze(1).long()
@@ -250,8 +252,6 @@ class FSAuxCELoss(nn.Module):
 
     def forward(self, inputs, targets, **kwargs):
         aux_out, seg_out = inputs
-        print("seg_out", seg_out.shape)
-        print("targets", targets.shape)
         seg_loss = self.ce_loss(seg_out, targets)
         aux_loss = self.ce_loss(aux_out, targets)
         loss = self.configer.get("network", "loss_weights")["seg_loss"] * seg_loss
