@@ -250,6 +250,8 @@ class FSAuxCELoss(nn.Module):
 
     def forward(self, inputs, targets, **kwargs):
         aux_out, seg_out = inputs
+        print("seg_out", seg_out.shape)
+        print("targets", targets.shape)
         seg_loss = self.ce_loss(seg_out, targets)
         aux_loss = self.ce_loss(aux_out, targets)
         loss = self.configer.get("network", "loss_weights")["seg_loss"] * seg_loss
