@@ -132,7 +132,7 @@ class FSCELoss(nn.Module):
                     loss += weights[i] * self.ce_loss(inputs[i], target)
 
         else:
-            print("target", target.shape)
+            print("targets", target.shape)
             target = self._scale_target(targets[0], (inputs.size(2), inputs.size(3)))
             loss = self.ce_loss(inputs, target)
 
