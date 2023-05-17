@@ -649,7 +649,7 @@ class FCN_ASP_4_Mep(nn.Module):
         return output, proj
 
 class FCN_ASP_3_Mep(nn.Module):
-    def __init__(self, configer, features, hidden_features=256, out_features=512, dilations=(18, 36, 54), num_classes=19, bn_type=None, dropout=0.1):
+    def __init__(self, configer, features, hidden_features=256, out_features=512, dilations=(6, 12, 18), num_classes=19, bn_type=None, dropout=0.1):
         super(FCN_ASP_3_Mep, self).__init__()
         self.fcn = nn.Sequential(nn.Conv2d(features, hidden_features, kernel_size=3, padding=1, dilation=1, bias=True),
                                      ModuleHelper.BNReLU(hidden_features, bn_type=bn_type),
