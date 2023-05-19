@@ -285,7 +285,7 @@ class Tester(object):
             outputs = self.seg_net.forward(scaled_inputs)
             torch.cuda.synchronize()
             end = timeit.default_timer()
-            outputs = outputs[-1]
+            outputs = outputs[1]
             outputs = F.interpolate(
                 outputs, size=(h, w), mode="bilinear", align_corners=True
             )
