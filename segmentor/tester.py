@@ -200,12 +200,12 @@ class Tester(object):
                 feats_, feats_y_, labels_ = Sampling(sample, feats, feats, labels, labels)
                 if j == 0:
                     feature = torch.cat(torch.unbind(feats_, dim=1), dim=0)
-                    labels = labels_.contiguous().view(-1, 1)
+                    lab = labels_.contiguous().view(-1, 1)
                 else:
                     feat = torch.cat(torch.unbind(feats_, dim=1), dim=0)
                     labe = labels_.contiguous().view(-1, 1)
                     feature = torch.cat([feature, feat], dim=0)
-                    labels = torch.cat([labels, labe], dim=0)
+                    lab = torch.cat([lab, labe], dim=0)
                 
                 print(feature.shape)
                 print(labels_.shape)
