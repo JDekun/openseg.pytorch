@@ -9,6 +9,13 @@
       "data_dir": "~/DataSet/ADE20K",
       "workers": 8
     },
+    "contrast":{
+      "proj_dim": 128,
+      "projector": ["layer_1"],
+      "loss_weights": [0.1, 0.1, 0.1, 0.1],
+      "contrast_type": "intra" ,
+      "memory_size": 16384
+    },
    "train": {
       "batch_size": 16,
       "data_transformer": {

@@ -59,15 +59,25 @@ from lib.models.nets.contrast_hrnet import HRNet_W48_ASPOCR_MLM
 from lib.models.nets.contrast_resnet import RES_OCR_ASP
 from lib.models.nets.contrast_resnet import RES_FCN_ASP
 from lib.models.nets.contrast_resnet import RES_FCN_ASP_3
+from lib.models.nets.contrast_resnet import RES_FCN_ASP_4_MEP
+from lib.models.nets.contrast_resnet import RES_FCN512_ASP_3_MEP
 from lib.models.nets.contrast_resnet import RES_FCN_ASP_3_MEP
 from lib.models.nets.contrast_resnet import RES_FCN_ASP_2_MEP
 from lib.models.nets.contrast_resnet import RES_FCN_ASP_1_MEP
 from lib.models.nets.contrast_resnet import RES_FCN_ASP_0_MEP
+from lib.models.nets.contrast_resnet import RES_OCR_ASP_0
 from lib.models.nets.contrast_resnet import RES_OCR_ASP_0_MEP_IN
 from lib.models.nets.contrast_resnet import RES_OCR_ASP_0_MEP_AF
 from lib.models.nets.contrast_resnet import RES_OCR_ASP_0_MEP_BE
-from lib.models.nets.contrast_resnet import RES_OCR_ASP_0
 from lib.models.nets.contrast_resnet import RES_FCN_ASP_0
+from lib.models.nets.contrast_resnet import RES_DEEPLABV3_ASP
+from lib.models.nets.contrast_resnet import RES_DEEPLABV3_ASP_MEP_BE
+from lib.models.nets.contrast_resnet import RES_DEEPLABV3_ASP_MEP_AF
+from lib.models.nets.contrast_resnet import RES_DEEPLABV3_ASP_MEP_IN
+from lib.models.nets.deeplab import DeepLabV3
+from lib.models.nets.deeplab_mep_be import DeepLabV3_MEP_BE
+from lib.models.nets.deeplab_mep_af import DeepLabV3_MEP_AF
+from lib.models.nets.deeplab_mep_in import DeepLabV3_MEP_IN
 
 
 from lib.utils.tools.logger import Logger as Log
@@ -100,6 +110,11 @@ SEG_MODEL_DICT = {
     "ce2p_ideal_ocrnet": CE2P_IdealOCRNet,
     # baseline series
     "fcnet": FcnNet,
+    # deeplabv3
+    'deeplabv3': DeepLabV3,
+    'deeplabv3_mep_be': DeepLabV3_MEP_BE,
+    'deeplabv3_mep_af': DeepLabV3_MEP_AF,
+    'deeplabv3_mep_in': DeepLabV3_MEP_IN,
     # dcnet
     "spatial_ocrnet_dc": SpatialOCRNetDC,
     "fcnet_dc": FcnNetDC,
@@ -113,15 +128,21 @@ SEG_MODEL_DICT = {
     "resnet_ocr_asp": RES_OCR_ASP,
     "resnet_fcn_asp": RES_FCN_ASP,
     "resnet_fcn_asp3": RES_FCN_ASP_3,
-    "resnet_fcn_asp03_mep": RES_FCN_ASP_3_MEP,
-    "resnet_fcn_asp02_mep": RES_FCN_ASP_2_MEP,
-    "resnet_fcn_asp01_mep": RES_FCN_ASP_1_MEP,
+    "resnet_fcn_asp4_mep": RES_FCN_ASP_4_MEP,
+    "resnet_fcn512_asp3_mep": RES_FCN512_ASP_3_MEP,
+    "resnet_fcn_asp3_mep": RES_FCN_ASP_3_MEP,
+    "resnet_fcn_asp2_mep": RES_FCN_ASP_2_MEP,
+    "resnet_fcn_asp1_mep": RES_FCN_ASP_1_MEP,
     "resnet_fcn_asp0_mep": RES_FCN_ASP_0_MEP,
+    "resnet_fcn_asp0": RES_FCN_ASP_0,
+    "resnet_ocr_asp0": RES_OCR_ASP_0,
     "resnet_ocr_asp0_mep_in": RES_OCR_ASP_0_MEP_IN,
     "resnet_ocr_asp0_mep_af": RES_OCR_ASP_0_MEP_AF,
     "resnet_ocr_asp0_mep_be": RES_OCR_ASP_0_MEP_BE,
-    "resnet_ocr_asp0": RES_OCR_ASP_0,
-    "resnet_fcn_asp0": RES_FCN_ASP_0,
+    "resnet_deeplabv3_asp": RES_DEEPLABV3_ASP,
+    "resnet_deeplabv3_asp_mep_be": RES_DEEPLABV3_ASP_MEP_BE,
+    "resnet_deeplabv3_asp_mep_af": RES_DEEPLABV3_ASP_MEP_AF,
+    "resnet_deeplabv3_asp_mep_in": RES_DEEPLABV3_ASP_MEP_IN,
 }
 
 
