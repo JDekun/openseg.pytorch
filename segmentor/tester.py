@@ -207,6 +207,8 @@ class Tester(object):
                     feature = torch.cat([feature, feat], dim=0)
                     lab = torch.cat([lab, labe], dim=0)
                 # tsne
+                torch.save(feature, os.path.join(self.save_dir, "x.pt"))
+                torch.save(lab, os.path.join(self.save_dir, "labels.pt"))
 
                 for k in range(n):
                     image_id += 1
