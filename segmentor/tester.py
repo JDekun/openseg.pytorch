@@ -208,7 +208,7 @@ class Tester(object):
                     lab = torch.cat([lab, labe], dim=0)
                 
                 print(feature.shape)
-                print(labels_.shape)
+                print(lab.shape)
                 # tsne
 
                 for k in range(n):
