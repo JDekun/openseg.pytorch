@@ -206,9 +206,6 @@ class Tester(object):
                     labe = labels_.contiguous().view(-1, 1)
                     feature = torch.cat([feature, feat], dim=0)
                     lab = torch.cat([lab, labe], dim=0)
-                
-                print(feature.shape)
-                print(lab.shape)
                 # tsne
 
                 for k in range(n):
@@ -279,6 +276,8 @@ class Tester(object):
 
         # Print the log info & reset the states.
         Log.info("Test Time {batch_time.sum:.3f}s".format(batch_time=self.batch_time))
+        torch.save(feature, os.path.join(self.save_dir, "x.pt"))
+        torch.save(lab, os.path.join(self.save_dir, "labels.pt"))
 
     def offset_test(self, inputs, offset_h_maps, offset_w_maps, scale=1):
         if isinstance(inputs, torch.Tensor):
