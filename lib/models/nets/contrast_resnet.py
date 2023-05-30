@@ -744,6 +744,7 @@ class RES_FCN_ASP_3_MEP(nn.Module):
         # mep
         x, proj = self.fcn_asp_head(x[-1])
         # mep
+        proj['tsne'] = x
         self.confeat = x
         x = self.head(x)
         x_dsn = F.interpolate(
