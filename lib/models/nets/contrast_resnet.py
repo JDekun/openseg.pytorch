@@ -741,6 +741,7 @@ class RES_FCN_ASP_3_MEP(nn.Module):
         # mep
         x, proj = self.fcn_asp_head(x[-1])
         # mep
+        self.confeat = x
         x = self.head(x)
         x_dsn = F.interpolate(
             x_dsn, size=(x_.size(2), x_.size(3)), mode="bilinear", align_corners=True
@@ -750,6 +751,8 @@ class RES_FCN_ASP_3_MEP(nn.Module):
         )
         return x_dsn, x, proj
 
+    def get_fea(self):
+        return self.confeat
 
 class RES_FCN512_ASP_3_MEP(nn.Module):
 

@@ -142,9 +142,10 @@ class Tester(object):
             inputs = data_dict["img"]
             names = data_dict["name"]
             metas = data_dict["meta"]
+            labels = data_dict["labelmap"]
 
             if "val" in self.save_dir and os.environ.get("save_gt_label"):
-                labels = data_dict["labelmap"]
+                label = data_dict["labelmap"]
 
             with torch.no_grad():
                 # Forward pass.
@@ -156,7 +157,7 @@ class Tester(object):
                     offset_w_maps = data_dict["offsetmap_w"]
                     outputs = self.offset_test(inputs, offset_h_maps, offset_w_maps)
                 elif self.configer.get("test", "mode") == "ss_test":
-                    outputs = self.ss_test(inputs)
+                    outputs, feats = self.ss_test(inputs)
                 elif self.configer.get("test", "mode") == "ms_test":
                     outputs = self.ms_test(inputs)
                 elif self.configer.get("test", "mode") == "ms_test_depth":
@@ -180,6 +181,35 @@ class Tester(object):
                         for output in outputs
                     ]
                     n = len(outputs)
+                
+                # tsne
+                from lib.loss.SamplesModel.sample_tsne import Sampling
+                sample = "label_ave"
+
+                h, w = feats.shape[2], feats.shape[3]
+                labels = labels.unsqueeze(1).float().clone()
+                labels = torch.nn.functional.interpolate(labels, (h, w), mode='nearest')
+                labels = labels.squeeze(1).long()
+                assert labels.shape[-1] == feats.shape[-1], '{} {}'.format(labels.shape, feats.shape)
+
+                batch_size = feats.shape[0]
+                labels = labels.contiguous().view(batch_size, -1)
+                feats = feats.permute(0, 2, 3, 1)
+                feats = feats.contiguous().view(feats.shape[0], -1, feats.shape[-1])
+
+                feats_, feats_y_, labels_ = Sampling(sample, feats, feats, labels, labels)
+                if j == 0:
+                    feature = torch.cat(torch.unbind(feats_, dim=1), dim=0)
+                    labels_ = labels_.contiguous().view(-1, 1)
+                else:
+                    feat = torch.cat(torch.unbind(feats_, dim=1), dim=0)
+                    labe = labels_.contiguous().view(-1, 1)
+                    feature = torch.cat([feature, feat], dim=0)
+                    labels_ = torch.cat([labels_, labe], dim=0)
+                
+                print(feature.shape)
+                print(labels_.shape)
+                # tsne
 
                 for k in range(n):
                     image_id += 1
@@ -226,7 +256,7 @@ class Tester(object):
                         if self.configer.exists(
                             "data", "reduce_zero_label"
                         ) and self.configer.get("data", "reduce_zero_label"):
-                            label_img = labels[k] + 1
+                            label_img = label[k] + 1
                             label_img = np.asarray(label_img, dtype=np.uint8)
                         color_img_ = Image.fromarray(label_img)
                         color_img_.putpalette(colors)
@@ -283,13 +313,14 @@ class Tester(object):
             )
             start = timeit.default_timer()
             outputs = self.seg_net.forward(scaled_inputs)
+            feats = self.seg_net.get_fea()
             torch.cuda.synchronize()
             end = timeit.default_timer()
             outputs = outputs[1]
             outputs = F.interpolate(
                 outputs, size=(h, w), mode="bilinear", align_corners=True
             )
-            return outputs
+            return outputs, feats
         elif isinstance(inputs, collections.Sequence):
             device_ids = self.configer.get("gpu")
             replicas = nn.parallel.replicate(self.seg_net.module, device_ids)
