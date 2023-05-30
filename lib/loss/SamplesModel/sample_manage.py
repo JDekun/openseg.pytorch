@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from lib.loss import SamplesModel
 
-def Sampling(type, X, Y, labels, predict, ignore_label: int = 255):
+def Sampling(type, X, Y, labels, predict, ignore_label: int = -1):
     batch_size, feat_dim = X.shape[0], X.shape[-1]
 
     classes = []

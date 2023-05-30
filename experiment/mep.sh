@@ -12,7 +12,7 @@ CONFIGS_TEST="configs/cityscapes/R_101_D_8_TEST.json"
 
 MODEL_NAME="resnet_fcn_asp3_mep"
 LOSS_TYPE="fs_auxce_loss_dc"
-MEMORY_SIZE=8192
+MEMORY_SIZE=16384
 CHECKPOINTS_NAME="${MODEL_NAME}${MEMORY_SIZE}(183654)_${BACKBONE}_$(date +%F_%H-%M-%S)"
 LOG_FILE="./experiment/log/cityscapes/${CHECKPOINTS_NAME}.log"
 echo "Logging to $LOG_FILE"
