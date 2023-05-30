@@ -749,6 +749,7 @@ class RES_FCN_ASP_3_MEP(nn.Module):
         x = F.interpolate(
             x, size=(x_.size(2), x_.size(3)), mode="bilinear", align_corners=True
         )
+        print('hell0')
         return x_dsn, x, proj
 
     def get_fea(self):
