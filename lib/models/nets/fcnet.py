@@ -83,16 +83,21 @@ class FcnNet(nn.Module):
             )
 
     def forward(self, x_):
+        proj = dict()
         x = self.backbone(x_)
         aux_x = self.dsn_head(x[-2])
-        x = self.cls_head(x[-1])
+        x = self.cls_head[0](x[-1])
+        x = self.cls_head[1](x)
+        p = self.cls_head[2](x)
+        x = self.cls_head[3](p)
+        proj['tsne'] = x
         aux_x = F.interpolate(
             aux_x, size=(x_.size(2), x_.size(3)), mode="bilinear", align_corners=True
         )
         x = F.interpolate(
             x, size=(x_.size(2), x_.size(3)), mode="bilinear", align_corners=True
         )
-        return aux_x, x
+        return aux_x, x, proj
 
 
 class FcnNet_wo_dsn(nn.Module):
