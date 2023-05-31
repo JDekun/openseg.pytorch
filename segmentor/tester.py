@@ -187,7 +187,7 @@ class Tester(object):
                 
                 # tsne
                 from lib.loss.SamplesModel.sample_tsne import Sampling
-                sample = "label_ave"
+                sample = "only_esay"
 
                 h, w = feats.shape[2], feats.shape[3]
                 labels = labels.unsqueeze(1).float().clone()
