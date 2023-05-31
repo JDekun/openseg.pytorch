@@ -276,8 +276,8 @@ class Tester(object):
 
         # Print the log info & reset the states.
         Log.info("Test Time {batch_time.sum:.3f}s".format(batch_time=self.batch_time))
-        torch.save(feature, os.path.join(self.save_dir, "x.pt"))
-        torch.save(lab, os.path.join(self.save_dir, "labels.pt"))
+        torch.save(feature, os.path.join("t-sne/", "x.pt"))
+        torch.save(lab, os.path.join("t-sne/", "labels.pt"))
 
     def offset_test(self, inputs, offset_h_maps, offset_w_maps, scale=1):
         if isinstance(inputs, torch.Tensor):
