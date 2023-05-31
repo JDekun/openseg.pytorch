@@ -187,7 +187,7 @@ class Tester(object):
                 
                 # tsne
                 from lib.loss.SamplesModel.sample_tsne import Sampling
-                sample = "only_esay"
+                sample = "only_esay_one"
 
                 h, w = feats.shape[2], feats.shape[3]
                 labels = labels.unsqueeze(1).float().clone()
@@ -211,68 +211,68 @@ class Tester(object):
                     lab = torch.cat([lab, labe], dim=0)
                 # tsne
 
-                # for k in range(n):
-                #     image_id += 1
-                #     ori_img_size = metas[k]["ori_img_size"]
-                #     border_size = metas[k]["border_size"]
-                #     logits = cv2.resize(
-                #         outputs[k][: border_size[1], : border_size[0]],
-                #         tuple(ori_img_size),
-                #         interpolation=cv2.INTER_CUBIC,
-                #     )
+                for k in range(n):
+                    image_id += 1
+                    ori_img_size = metas[k]["ori_img_size"]
+                    border_size = metas[k]["border_size"]
+                    logits = cv2.resize(
+                        outputs[k][: border_size[1], : border_size[0]],
+                        tuple(ori_img_size),
+                        interpolation=cv2.INTER_CUBIC,
+                    )
 
-                #     # save the logits map
-                #     if self.configer.get("test", "save_prob"):
-                #         prob_path = os.path.join(
-                #             self.save_dir, "prob/", "{}.npy".format(names[k])
-                #         )
-                #         FileHelper.make_dirs(prob_path, is_file=True)
-                #         np.save(prob_path, softmax(logits, axis=-1))
+                    # save the logits map
+                    if self.configer.get("test", "save_prob"):
+                        prob_path = os.path.join(
+                            self.save_dir, "prob/", "{}.npy".format(names[k])
+                        )
+                        FileHelper.make_dirs(prob_path, is_file=True)
+                        np.save(prob_path, softmax(logits, axis=-1))
 
-                #     label_img = np.asarray(np.argmax(logits, axis=-1), dtype=np.uint8)
-                #     if self.configer.exists(
-                #         "data", "reduce_zero_label"
-                #     ) and self.configer.get("data", "reduce_zero_label"):
-                #         label_img = label_img + 1
-                #         label_img = label_img.astype(np.uint8)
-                #     if self.configer.exists("data", "label_list"):
-                #         label_img_ = self.__relabel(label_img)
-                #     else:
-                #         label_img_ = label_img
-                #     label_img_ = Image.fromarray(label_img_, "P")
-                #     Log.info(
-                #         "{:4d}/{:4d} label map generated".format(
-                #             image_id, self.test_size
-                #         )
-                #     )
-                #     label_path = os.path.join(
-                #         self.save_dir, "label/", "{}.png".format(names[k])
-                #     )
-                #     FileHelper.make_dirs(label_path, is_file=True)
-                #     ImageHelper.save(label_img_, label_path)
+                    label_img = np.asarray(np.argmax(logits, axis=-1), dtype=np.uint8)
+                    if self.configer.exists(
+                        "data", "reduce_zero_label"
+                    ) and self.configer.get("data", "reduce_zero_label"):
+                        label_img = label_img + 1
+                        label_img = label_img.astype(np.uint8)
+                    if self.configer.exists("data", "label_list"):
+                        label_img_ = self.__relabel(label_img)
+                    else:
+                        label_img_ = label_img
+                    label_img_ = Image.fromarray(label_img_, "P")
+                    Log.info(
+                        "{:4d}/{:4d} label map generated".format(
+                            image_id, self.test_size
+                        )
+                    )
+                    label_path = os.path.join(
+                        self.save_dir, "label/", "{}.png".format(names[k])
+                    )
+                    FileHelper.make_dirs(label_path, is_file=True)
+                    ImageHelper.save(label_img_, label_path)
 
-                #     # colorize the label-map
-                #     if os.environ.get("save_gt_label"):
-                #         if self.configer.exists(
-                #             "data", "reduce_zero_label"
-                #         ) and self.configer.get("data", "reduce_zero_label"):
-                #             label_img = label[k] + 1
-                #             label_img = np.asarray(label_img, dtype=np.uint8)
-                #         color_img_ = Image.fromarray(label_img)
-                #         color_img_.putpalette(colors)
-                #         vis_path = os.path.join(
-                #             self.save_dir, "gt_vis/", "{}.png".format(names[k])
-                #         )
-                #         FileHelper.make_dirs(vis_path, is_file=True)
-                #         ImageHelper.save(color_img_, save_path=vis_path)
-                #     else:
-                #         color_img_ = Image.fromarray(label_img)
-                #         color_img_.putpalette(colors)
-                #         vis_path = os.path.join(
-                #             self.save_dir, "vis/", "{}.png".format(names[k])
-                #         )
-                #         FileHelper.make_dirs(vis_path, is_file=True)
-                #         ImageHelper.save(color_img_, save_path=vis_path)
+                    # colorize the label-map
+                    if os.environ.get("save_gt_label"):
+                        if self.configer.exists(
+                            "data", "reduce_zero_label"
+                        ) and self.configer.get("data", "reduce_zero_label"):
+                            label_img = label[k] + 1
+                            label_img = np.asarray(label_img, dtype=np.uint8)
+                        color_img_ = Image.fromarray(label_img)
+                        color_img_.putpalette(colors)
+                        vis_path = os.path.join(
+                            self.save_dir, "gt_vis/", "{}.png".format(names[k])
+                        )
+                        FileHelper.make_dirs(vis_path, is_file=True)
+                        ImageHelper.save(color_img_, save_path=vis_path)
+                    else:
+                        color_img_ = Image.fromarray(label_img)
+                        color_img_.putpalette(colors)
+                        vis_path = os.path.join(
+                            self.save_dir, "vis/", "{}.png".format(names[k])
+                        )
+                        FileHelper.make_dirs(vis_path, is_file=True)
+                        ImageHelper.save(color_img_, save_path=vis_path)
 
             self.batch_time.update(time.time() - start_time)
             start_time = time.time()
