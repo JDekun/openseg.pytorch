@@ -90,7 +90,7 @@ class FcnNet(nn.Module):
         x = self.cls_head[1](x)
         p = self.cls_head[2](x)
         x = self.cls_head[3](p)
-        proj['tsne'] = x
+        proj['tsne'] = p
         aux_x = F.interpolate(
             aux_x, size=(x_.size(2), x_.size(3)), mode="bilinear", align_corners=True
         )
