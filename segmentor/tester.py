@@ -328,7 +328,7 @@ class Tester(object):
             outputs = F.interpolate(
                 outputs, size=(h, w), mode="bilinear", align_corners=True
             )
-            return outputs, feats, outputs
+            return outputs, outputs, outputs
         elif isinstance(inputs, collections.Sequence):
             device_ids = self.configer.get("gpu")
             replicas = nn.parallel.replicate(self.seg_net.module, device_ids)
