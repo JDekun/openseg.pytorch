@@ -200,8 +200,8 @@ class Tester(object):
                 assert labels.shape[-1] == feats.shape[-1], '{} {}'.format(labels.shape, feats.shape)
 
                 batch_size = feats.shape[0]
-                labels = labels.contiguous().view(batch_size, -1)
-                predict = predict.contiguous().view(batch_size, -1)
+                labels = labels.contiguous().view(batch_size, -1).cuda()
+                predict = predict.contiguous().view(batch_size, -1).cuda()
                 feats = feats.permute(0, 2, 3, 1)
                 feats = feats.contiguous().view(feats.shape[0], -1, feats.shape[-1])
 
