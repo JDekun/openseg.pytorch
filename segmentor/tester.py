@@ -320,15 +320,15 @@ class Tester(object):
             )
             start = timeit.default_timer()
             outputs = self.seg_net.forward(scaled_inputs)
-            # feats = outputs[2]['tsne']
-            feats = outputs[1]
+            feats = outputs[2]['tsne']
+            # feats = outputs[1]
             torch.cuda.synchronize()
             end = timeit.default_timer()
             outputs = outputs[1]
             outputs = F.interpolate(
                 outputs, size=(h, w), mode="bilinear", align_corners=True
             )
-            return outputs, outputs, outputs
+            return outputs, feats, outputs
         elif isinstance(inputs, collections.Sequence):
             device_ids = self.configer.get("gpu")
             replicas = nn.parallel.replicate(self.seg_net.module, device_ids)
