@@ -192,7 +192,6 @@ class Tester(object):
                 h, w = feats.shape[2], feats.shape[3]
                 
                 pred = torch.nn.functional.interpolate(input=pred, size=(h, w), mode='bilinear', align_corners=False)
-                print(pred.shape)
                 _, predict = torch.max(pred, 1)
 
                 labels = labels.unsqueeze(1).float().clone()
