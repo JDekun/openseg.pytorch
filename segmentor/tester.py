@@ -109,7 +109,10 @@ class Tester(object):
         image_id = 0
 
         Log.info("save dir {}".format(self.save_dir))
-        FileHelper.make_dirs(self.save_dir, is_file=False)
+
+        from lib.utils.distributed import get_rank, is_distributed
+        if (not is_distributed() or get_rank() == 0):
+            FileHelper.make_dirs(self.save_dir, is_file=False)
 
         if self.configer.get("dataset") in ["cityscapes", "gta5"]:
             colors = get_cityscapes_colors()

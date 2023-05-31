@@ -10,8 +10,6 @@ from __future__ import print_function
 
 import os
 
-from lib.utils.distributed import get_rank, is_distributed
-
 
 class FileHelper(object):
 
@@ -19,7 +17,7 @@ class FileHelper(object):
     def make_dirs(dir_path, is_file=False):
         dir_path = os.path.expanduser(dir_path)
         dir_name = FileHelper.dir_name(dir_path) if is_file else dir_path
-        if not os.path.exists(dir_name) and (not is_distributed() or get_rank() == 0):
+        if not os.path.exists(dir_name):
             os.makedirs(dir_name)
 
     @staticmethod
