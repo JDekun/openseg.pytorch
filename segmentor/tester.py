@@ -316,7 +316,7 @@ class Tester(object):
             start = timeit.default_timer()
             outputs = self.seg_net.forward(scaled_inputs)
             # feats = outputs[2]['tsne']
-            feats = outputs
+            feats = outputs[1]
             torch.cuda.synchronize()
             end = timeit.default_timer()
             outputs = outputs[1]
