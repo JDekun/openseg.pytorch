@@ -160,7 +160,7 @@ class Tester(object):
                     offset_w_maps = data_dict["offsetmap_w"]
                     outputs = self.offset_test(inputs, offset_h_maps, offset_w_maps)
                 elif self.configer.get("test", "mode") == "ss_test":
-                    outputs, feats = self.ss_test(inputs)
+                    outputs, feats, pred = self.ss_test(inputs)
                 elif self.configer.get("test", "mode") == "ms_test":
                     outputs = self.ms_test(inputs)
                 elif self.configer.get("test", "mode") == "ms_test_depth":
@@ -190,6 +190,10 @@ class Tester(object):
                 sample = "only_esay_one"
 
                 h, w = feats.shape[2], feats.shape[3]
+                
+                pred = torch.nn.functional.interpolate(input=pred, size=(h, w), mode='bilinear', align_corners=False)
+                _, predict = torch.max(pred, 1)
+
                 labels = labels.unsqueeze(1).float().clone()
                 labels = torch.nn.functional.interpolate(labels, (h, w), mode='nearest')
                 labels = labels.squeeze(1).long()
@@ -197,10 +201,11 @@ class Tester(object):
 
                 batch_size = feats.shape[0]
                 labels = labels.contiguous().view(batch_size, -1)
+                predict = predict.contiguous().view(batch_size, -1)
                 feats = feats.permute(0, 2, 3, 1)
                 feats = feats.contiguous().view(feats.shape[0], -1, feats.shape[-1])
 
-                feats_, feats_y_, labels_ = Sampling(sample, feats, feats, labels, labels)
+                feats_, feats_y_, labels_ = Sampling(sample, feats, feats, labels, predict)
                 if j == 0:
                     feature = torch.cat(torch.unbind(feats_, dim=1), dim=0)
                     lab = labels_.contiguous().view(-1, 1)
@@ -323,7 +328,7 @@ class Tester(object):
             outputs = F.interpolate(
                 outputs, size=(h, w), mode="bilinear", align_corners=True
             )
-            return outputs, feats
+            return outputs, feats, outputs
         elif isinstance(inputs, collections.Sequence):
             device_ids = self.configer.get("gpu")
             replicas = nn.parallel.replicate(self.seg_net.module, device_ids)
