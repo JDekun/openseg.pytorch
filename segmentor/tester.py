@@ -185,36 +185,36 @@ class Tester(object):
                     ]
                     n = len(outputs)
                 
-                # tsne
-                from lib.loss.SamplesModel.sample_tsne import Sampling
-                sample = "only_esay_one"
+                # # tsne
+                # from lib.loss.SamplesModel.sample_tsne import Sampling
+                # sample = "only_esay_one"
 
-                h, w = feats.shape[2], feats.shape[3]
+                # h, w = feats.shape[2], feats.shape[3]
                 
-                pred = torch.nn.functional.interpolate(input=pred, size=(h, w), mode='bilinear', align_corners=False)
-                _, predict = torch.max(pred, 1)
+                # pred = torch.nn.functional.interpolate(input=pred, size=(h, w), mode='bilinear', align_corners=False)
+                # _, predict = torch.max(pred, 1)
 
-                labels = labels.unsqueeze(1).float().clone()
-                labels = torch.nn.functional.interpolate(labels, (h, w), mode='nearest')
-                labels = labels.squeeze(1).long()
-                assert labels.shape[-1] == feats.shape[-1], '{} {}'.format(labels.shape, feats.shape)
+                # labels = labels.unsqueeze(1).float().clone()
+                # labels = torch.nn.functional.interpolate(labels, (h, w), mode='nearest')
+                # labels = labels.squeeze(1).long()
+                # assert labels.shape[-1] == feats.shape[-1], '{} {}'.format(labels.shape, feats.shape)
 
-                batch_size = feats.shape[0]
-                labels = labels.contiguous().view(batch_size, -1).cuda()
-                predict = predict.contiguous().view(batch_size, -1).cuda()
-                feats = feats.permute(0, 2, 3, 1)
-                feats = feats.contiguous().view(feats.shape[0], -1, feats.shape[-1])
+                # batch_size = feats.shape[0]
+                # labels = labels.contiguous().view(batch_size, -1).cuda()
+                # predict = predict.contiguous().view(batch_size, -1).cuda()
+                # feats = feats.permute(0, 2, 3, 1)
+                # feats = feats.contiguous().view(feats.shape[0], -1, feats.shape[-1])
 
-                feats_, feats_y_, labels_ = Sampling(sample, feats, feats, labels, predict)
-                if j == 0:
-                    feature = torch.cat(torch.unbind(feats_, dim=1), dim=0)
-                    lab = labels_.contiguous().view(-1, 1)
-                else:
-                    feat = torch.cat(torch.unbind(feats_, dim=1), dim=0)
-                    labe = labels_.contiguous().view(-1, 1)
-                    feature = torch.cat([feature, feat], dim=0)
-                    lab = torch.cat([lab, labe], dim=0)
-                # tsne
+                # feats_, feats_y_, labels_ = Sampling(sample, feats, feats, labels, predict)
+                # if j == 0:
+                #     feature = torch.cat(torch.unbind(feats_, dim=1), dim=0)
+                #     lab = labels_.contiguous().view(-1, 1)
+                # else:
+                #     feat = torch.cat(torch.unbind(feats_, dim=1), dim=0)
+                #     labe = labels_.contiguous().view(-1, 1)
+                #     feature = torch.cat([feature, feat], dim=0)
+                #     lab = torch.cat([lab, labe], dim=0)
+                # # tsne
 
                 for k in range(n):
                     image_id += 1
@@ -284,8 +284,8 @@ class Tester(object):
 
         # Print the log info & reset the states.
         Log.info("Test Time {batch_time.sum:.3f}s".format(batch_time=self.batch_time))
-        torch.save(feature, os.path.join("t-sne/", "x.pt"))
-        torch.save(lab, os.path.join("t-sne/", "labels.pt"))
+        # torch.save(feature, os.path.join("t-sne/", "x.pt"))
+        # torch.save(lab, os.path.join("t-sne/", "labels.pt"))
 
     def offset_test(self, inputs, offset_h_maps, offset_w_maps, scale=1):
         if isinstance(inputs, torch.Tensor):
