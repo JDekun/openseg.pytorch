@@ -187,7 +187,7 @@ class Tester(object):
                 
                 # tsne
                 from lib.loss.SamplesModel.sample_tsne import Sampling
-                sample = "only_esay"
+                sample = "only_esay_one"
 
                 h, w = feats.shape[2], feats.shape[3]
                 
