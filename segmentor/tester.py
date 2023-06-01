@@ -187,7 +187,7 @@ class Tester(object):
                 
                 # tsne
                 from lib.loss.SamplesModel.sample_tsne import Sampling
-                sample = "only_esay_one"
+                sample = "only_esay"
 
                 h, w = feats.shape[2], feats.shape[3]
                 
@@ -205,7 +205,7 @@ class Tester(object):
                 feats = feats.permute(0, 2, 3, 1)
                 feats = feats.contiguous().view(feats.shape[0], -1, feats.shape[-1])
 
-                feats_, feats_y_, labels_ = Sampling(sample, feats, feats, labels, labels)
+                feats_, feats_y_, labels_ = Sampling(sample, feats, feats, labels, predict)
                 if j == 0:
                     feature = torch.cat(torch.unbind(feats_, dim=1), dim=0)
                     lab = labels_.contiguous().view(-1, 1)
