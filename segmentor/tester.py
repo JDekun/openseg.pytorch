@@ -145,7 +145,7 @@ class Tester(object):
             inputs = data_dict["img"]
             names = data_dict["name"]
             metas = data_dict["meta"]
-            labels = data_dict["labelmap"]
+            # labels = data_dict["labelmap"]
 
             if "val" in self.save_dir and os.environ.get("save_gt_label"):
                 label = data_dict["labelmap"]
