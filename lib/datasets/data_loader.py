@@ -180,7 +180,7 @@ class DataLoader(object):
         return valloader
 
     def get_testloader(self, dataset=None):
-            dataset = 'test' if dataset is None else dataset
+            dataset = 'test/image' if dataset is None else dataset
             if self.configer.exists('data', 'use_sw_offset') or self.configer.exists('data', 'pred_sw_offset'):
                 Log.info('use sliding window based offset loader for test ...')
                 test_loader = data.DataLoader(
