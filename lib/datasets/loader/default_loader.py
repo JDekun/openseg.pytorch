@@ -286,6 +286,8 @@ class CSDataTestLoader(data.Dataset):
     def __list_dirs(self, root_dir, dataset):
         img_list = list()
         name_list = list()
+        print(root_dir)
+        print(dataset)
         image_dir = os.path.join(root_dir, dataset, 'image')
         img_extension = os.listdir(image_dir)[0].split('.')[-1]
 
