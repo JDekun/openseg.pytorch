@@ -109,7 +109,10 @@ class Tester(object):
         image_id = 0
 
         Log.info("save dir {}".format(self.save_dir))
-        FileHelper.make_dirs(self.save_dir, is_file=False)
+
+        from lib.utils.distributed import get_rank, is_distributed
+        if (not is_distributed() or get_rank() == 0):
+            FileHelper.make_dirs(self.save_dir, is_file=False)
 
         if self.configer.get("dataset") in ["cityscapes", "gta5"]:
             colors = get_cityscapes_colors()
@@ -142,9 +145,10 @@ class Tester(object):
             inputs = data_dict["img"]
             names = data_dict["name"]
             metas = data_dict["meta"]
+            # labels = data_dict["labelmap"]
 
             if "val" in self.save_dir and os.environ.get("save_gt_label"):
-                labels = data_dict["labelmap"]
+                label = data_dict["labelmap"]
 
             with torch.no_grad():
                 # Forward pass.
@@ -156,7 +160,7 @@ class Tester(object):
                     offset_w_maps = data_dict["offsetmap_w"]
                     outputs = self.offset_test(inputs, offset_h_maps, offset_w_maps)
                 elif self.configer.get("test", "mode") == "ss_test":
-                    outputs = self.ss_test(inputs)
+                    outputs, feats, pred = self.ss_test(inputs)
                 elif self.configer.get("test", "mode") == "ms_test":
                     outputs = self.ms_test(inputs)
                 elif self.configer.get("test", "mode") == "ms_test_depth":
@@ -180,6 +184,37 @@ class Tester(object):
                         for output in outputs
                     ]
                     n = len(outputs)
+                
+                # # tsne
+                # from lib.loss.SamplesModel.sample_tsne import Sampling
+                # sample = "only_esay_one"
+
+                # h, w = feats.shape[2], feats.shape[3]
+                
+                # pred = torch.nn.functional.interpolate(input=pred, size=(h, w), mode='bilinear', align_corners=False)
+                # _, predict = torch.max(pred, 1)
+
+                # labels = labels.unsqueeze(1).float().clone()
+                # labels = torch.nn.functional.interpolate(labels, (h, w), mode='nearest')
+                # labels = labels.squeeze(1).long()
+                # assert labels.shape[-1] == feats.shape[-1], '{} {}'.format(labels.shape, feats.shape)
+
+                # batch_size = feats.shape[0]
+                # labels = labels.contiguous().view(batch_size, -1).cuda()
+                # predict = predict.contiguous().view(batch_size, -1).cuda()
+                # feats = feats.permute(0, 2, 3, 1)
+                # feats = feats.contiguous().view(feats.shape[0], -1, feats.shape[-1])
+
+                # feats_, feats_y_, labels_ = Sampling(sample, feats, feats, labels, predict)
+                # if j == 0:
+                #     feature = torch.cat(torch.unbind(feats_, dim=1), dim=0)
+                #     lab = labels_.contiguous().view(-1, 1)
+                # else:
+                #     feat = torch.cat(torch.unbind(feats_, dim=1), dim=0)
+                #     labe = labels_.contiguous().view(-1, 1)
+                #     feature = torch.cat([feature, feat], dim=0)
+                #     lab = torch.cat([lab, labe], dim=0)
+                # # tsne
 
                 for k in range(n):
                     image_id += 1
@@ -226,7 +261,7 @@ class Tester(object):
                         if self.configer.exists(
                             "data", "reduce_zero_label"
                         ) and self.configer.get("data", "reduce_zero_label"):
-                            label_img = labels[k] + 1
+                            label_img = label[k] + 1
                             label_img = np.asarray(label_img, dtype=np.uint8)
                         color_img_ = Image.fromarray(label_img)
                         color_img_.putpalette(colors)
@@ -249,6 +284,8 @@ class Tester(object):
 
         # Print the log info & reset the states.
         Log.info("Test Time {batch_time.sum:.3f}s".format(batch_time=self.batch_time))
+        # torch.save(feature, os.path.join("t-sne/", "x.pt"))
+        # torch.save(lab, os.path.join("t-sne/", "labels.pt"))
 
     def offset_test(self, inputs, offset_h_maps, offset_w_maps, scale=1):
         if isinstance(inputs, torch.Tensor):
@@ -283,13 +320,15 @@ class Tester(object):
             )
             start = timeit.default_timer()
             outputs = self.seg_net.forward(scaled_inputs)
+            # feats = outputs[2]['tsne']
+            # feats = outputs[1]
             torch.cuda.synchronize()
             end = timeit.default_timer()
             outputs = outputs[1]
             outputs = F.interpolate(
                 outputs, size=(h, w), mode="bilinear", align_corners=True
             )
-            return outputs
+            return outputs, outputs, outputs
         elif isinstance(inputs, collections.Sequence):
             device_ids = self.configer.get("gpu")
             replicas = nn.parallel.replicate(self.seg_net.module, device_ids)

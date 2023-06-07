@@ -735,12 +735,17 @@ class RES_FCN_ASP_3_MEP(nn.Module):
             ),
         )
 
+    def get_fea(self):
+        return self.confeat
+
     def forward(self, x_):
         x = self.backbone(x_)
         x_dsn = self.dsn_head(x[-2])
         # mep
         x, proj = self.fcn_asp_head(x[-1])
         # mep
+        proj['tsne'] = x
+        self.confeat = x
         x = self.head(x)
         x_dsn = F.interpolate(
             x_dsn, size=(x_.size(2), x_.size(3)), mode="bilinear", align_corners=True
@@ -749,7 +754,6 @@ class RES_FCN_ASP_3_MEP(nn.Module):
             x, size=(x_.size(2), x_.size(3)), mode="bilinear", align_corners=True
         )
         return x_dsn, x, proj
-
 
 class RES_FCN512_ASP_3_MEP(nn.Module):
 

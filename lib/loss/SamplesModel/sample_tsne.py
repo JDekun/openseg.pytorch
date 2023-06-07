@@ -61,4 +61,4 @@ def Sampling(type, X, Y, labels, predict, ignore_label: int = -1):
                     y_[X_ptr] = cls_id
                 X_ptr += 1
 
-    return X_, Y_, y_, X_.detach(), Y_.detach(), y_.detach()
+    return X_, Y_, y_

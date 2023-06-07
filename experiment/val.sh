@@ -10,10 +10,10 @@ BACKBONE="deepbase_resnet101_dilated8"
 CONFIGS="configs/cityscapes/R_101_D_8.json"
 CONFIGS_TEST="configs/cityscapes/R_101_D_8_TEST.json"
 
-MODEL_NAME="resnet_fcn_asp3_mep"
-LOSS_TYPE="fs_auxce_loss_dc"
+MODEL_NAME="fcnet"
+LOSS_TYPE="fs_auxce_loss"
 MEMORY_SIZE=16384
-CHECKPOINTS_NAME="${MODEL_NAME}${MEMORY_SIZE}_${BACKBONE}_$(date +%F_%H-%M-%S)"
+CHECKPOINTS_NAME="${MODEL_NAME}${MEMORY_SIZE}(183654)_${BACKBONE}_$(date +%F_%H-%M-%S)"
 LOG_FILE="./experiment/log/cityscapes/${CHECKPOINTS_NAME}.log"
 echo "Logging to $LOG_FILE"
 mkdir -p `dirname $LOG_FILE`
@@ -30,9 +30,9 @@ if [ "$1"x == "train"x ]; then
                        --log_to_file n \
                        --backbone ${BACKBONE} \
                        --model_name ${MODEL_NAME} \
-                       --gpu 6 7 8  \
-                       --train_batch_size 6\
-                       --val_batch_size 3 \
+                       --gpu 3 4 5 6  \
+                       --train_batch_size 8\
+                       --val_batch_size 4 \
                        --memory_size ${MEMORY_SIZE}\
                        --projector "layer_2" "layer_3" "layer_4"\
                        --data_dir ${DATA_DIR} \
@@ -63,11 +63,11 @@ elif [ "$1"x == "resume"x ]; then
                         2>&1 | tee -a ${LOG_FILE}
 
 elif [ "$1"x == "val"x ]; then
-  ${PYTHON} -u main.py --configs ${CONFIGS} --drop_last y \
-                       --backbone ${BACKBONE} --model_name ${MODEL_NAME} --checkpoints_name ${CHECKPOINTS_NAME} \
-                       --phase test --gpu 0 1 2 3 --resume ./checkpoints/cityscapes/${CHECKPOINTS_NAME}_latest.pth \
+  python -u main.py --configs ${CONFIGS} --drop_last y \
+                       --backbone ${BACKBONE} --model_name ${MODEL_NAME} --checkpoints_name fcn \
+                       --phase test --gpu 2 3 4 5 --resume ./val/fcn.pth \
                        --loss_type ${LOSS_TYPE} --test_dir ${DATA_DIR}/val/image \
-                       --out_dir ${SAVE_DIR}${CHECKPOINTS_NAME}_val --data_dir ${DATA_DIR}
+                       --out_dir ./val/${CHECKPOINTS_NAME}_val --data_dir ${DATA_DIR}
 
   cd lib/metrics
   ${PYTHON} -u cityscapes_evaluator.py --pred_dir ${SAVE_DIR}${CHECKPOINTS_NAME}_val/label  \
