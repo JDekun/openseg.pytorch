@@ -262,20 +262,45 @@ class FSAuxCELossDC(nn.Module):
             conX = proj['decode']
         los_con = 0
         memory_size = self.configer.get("contrast", "memory_size")
+        
+        if memory_size:
+            i = 0
+            mbank = []
+            for name, conY in proj['proj'].items():
+                mbank[i] = conY[1]
+                i = i + 1
+
+        feats_que = []
+        feats_y_que = []
+        labels_queue = []
+        n = 0
         for name, conY in proj['proj'].items():
             index = int(name.split("_")[-1]) - 1
             weight = self.configer.get("contrast", "loss_weights")[index]
-            con = CONTRAST_Loss(
+            
+            # mbank = conY[1]
+            con, feats_que_, feats_y_que_, labels_queue_ = CONTRAST_Loss(
                 cls_score,
                 conX,
                 conY[0],
-                conY[1],
+                mbank,
                 targets,
                 memory_size,
                 sample = 'weight_ade_8',
                 contrast_type = self.configer.get("contrast", "contrast_type"))
             los_con = los_con + weight * con
+            feats_que[n] = feats_que_
+            feats_y_que[n] = feats_y_que_
+            labels_queue[n] = labels_queue_
+            n = n + 1
         # contrast
+
+        if memory_size:
+            for i in range(len(mbank)):
+                dequeue_and_enqueue_self_seri(feats_que[i], feats_y_que[i], labels_queue[i],
+                                                encode_queue=mbank[i][0],
+                                                code_queue_label=mbank[i][1],
+                                                encode_queue_ptr=mbank[i][2])
 
         loss = self.configer.get("network", "loss_weights")["seg_loss"] * seg_loss
         loss = loss + los_con
@@ -283,6 +308,40 @@ class FSAuxCELossDC(nn.Module):
             loss + self.configer.get("network", "loss_weights")["aux_loss"] * aux_loss
         )
         return loss
+
+
+def dequeue_and_enqueue_self_seri(keys, key_y, labels,
+                                encode_queue, code_queue_label, encode_queue_ptr
+                                ):
+    memory_size = encode_queue.shape[1]
+
+    iter =  len(labels)
+    for i in range(iter):
+        lb = 0
+        lbe = int(labels[i])
+        feat = keys[i]
+        feat_y = key_y[i]
+        K = feat.shape[0]
+
+        ptr = int(encode_queue_ptr[lb])
+
+        if ptr + K > memory_size:
+            total = ptr + K
+            start = total - memory_size
+            end = K - start
+
+            encode_queue[lb, ptr:memory_size, :] = feat[0:end]
+            encode_queue[lb, 0:start, :] = feat[end:]
+            encode_queue_ptr[lb] = start
+
+            code_queue_label[lb, ptr:memory_size] = lbe
+            code_queue_label[lb, 0:start] = lbe
+
+        else:
+            encode_queue[lb, ptr:ptr + K, :] = feat
+            encode_queue_ptr[lb] = (encode_queue_ptr[lb] + K) % memory_size
+
+            code_queue_label[lb, ptr:ptr + K] = lbe
 
 class FSCELossDC(nn.Module):
     def __init__(self, configer=None):

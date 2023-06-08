@@ -158,13 +158,6 @@ def CONTRAST_Loss(cls_score,
     labels = labels.squeeze(1).long()
     assert labels.shape[-1] == feats.shape[-1], '{} {}'.format(labels.shape, feats.shape)
 
-    if memory_size:
-        queue = queue_origin[0]
-        queue_label = queue_origin[1]
-    else:
-        queue=None
-        queue_label=None
-
 
     batch_size = feats.shape[0]
 
@@ -179,14 +172,27 @@ def CONTRAST_Loss(cls_score,
 
     feats_, feats_y_, labels_, feats_que_, feats_y_que_, labels_queue_ = Sampling(sample, feats, feats_y, labels, predict)
 
+    loss = 0
     if feats_ != None:
-        loss = Contrastive(feats_, feats_y_, labels_, queue,  queue_label, contrast_type)
         if memory_size:
-            dequeue_and_enqueue_self_seri(feats_que_, feats_y_que_, labels_queue_,
-                                            encode_queue=queue_origin[0],
-                                            code_queue_label=queue_origin[1],
-                                            encode_queue_ptr=queue_origin[2])
+            for i in range(len(queue_origin)):
+                queue = queue_origin[i][0]
+                queue_label = queue_origin[i][1]
+
+                temp = Contrastive(feats_, feats_y_, labels_, queue,  queue_label, contrast_type)
+                loss = loss + temp
+        else:
+            queue=None
+            queue_label=None
+
+            loss = Contrastive(feats_, feats_y_, labels_, queue,  queue_label, contrast_type)
+        
+        # if memory_size:
+        #     dequeue_and_enqueue_self_seri(feats_que_, feats_y_que_, labels_queue_,
+        #                                     encode_queue=queue_origin[0],
+        #                                     code_queue_label=queue_origin[1],
+        #                                     encode_queue_ptr=queue_origin[2])
     else:
         loss = 0
 
-    return loss
+    return loss, feats_que_, feats_y_que_, labels_queue_
