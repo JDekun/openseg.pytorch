@@ -274,6 +274,7 @@ class FSAuxCELossDC(nn.Module):
         feats_y_que = []
         labels_queue = []
         n = 0
+        print(len(mbank))
         for name, conY in proj['proj'].items():
             index = int(name.split("_")[-1]) - 1
             weight = self.configer.get("contrast", "loss_weights")[index]
