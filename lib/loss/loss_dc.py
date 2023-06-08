@@ -267,7 +267,7 @@ class FSAuxCELossDC(nn.Module):
             i = 0
             mbank = []
             for name, conY in proj['proj'].items():
-                mbank[i] = conY[1]
+                mbank.append(conY[1])
                 i = i + 1
 
         feats_que = []
@@ -289,9 +289,9 @@ class FSAuxCELossDC(nn.Module):
                 sample = 'weight_ade_8',
                 contrast_type = self.configer.get("contrast", "contrast_type"))
             los_con = los_con + weight * con
-            feats_que[n] = feats_que_
-            feats_y_que[n] = feats_y_que_
-            labels_queue[n] = labels_queue_
+            feats_que.append(feats_que_)
+            feats_y_que.append(feats_y_que_)
+            labels_queue.append(labels_queue_)
             n = n + 1
         # contrast
 
