@@ -182,8 +182,6 @@ def CONTRAST_Loss(cls_score,
                     queue = torch.cat([queue, queue_origin[i][0]], dim=1)
                     queue_label = torch.cat([queue_label, queue_origin[i][1]], dim=1)
 
-            print("queue",queue.shape)
-            print("queue_label",queue_label.shape)
             loss = Contrastive(feats_, feats_y_, labels_, queue,  queue_label, contrast_type)
 
         else:
