@@ -172,15 +172,18 @@ def CONTRAST_Loss(cls_score,
 
     feats_, feats_y_, labels_, feats_que_, feats_y_que_, labels_queue_ = Sampling(sample, feats, feats_y, labels, predict)
 
-    loss = 0
     if feats_ != None:
         if memory_size:
             for i in range(len(queue_origin)):
-                queue = queue_origin[i][0]
-                queue_label = queue_origin[i][1]
+                if i == 0:
+                    queue = queue_origin[i][0]
+                    queue_label = queue_origin[i][1]
+                else:
+                    queue = torch.cat([queue, queue_origin[i][0]], dim=1)
+                    queue_label = torch.cat([queue_label, queue_origin[i][1]], dim=1)
 
-                temp = Contrastive(feats_, feats_y_, labels_, queue,  queue_label, contrast_type)
-                loss = loss + temp
+            loss = Contrastive(feats_, feats_y_, labels_, queue,  queue_label, contrast_type)
+
         else:
             queue=None
             queue_label=None
