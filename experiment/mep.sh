@@ -30,9 +30,9 @@ if [ "$1"x == "train"x ]; then
                        --log_to_file n \
                        --backbone ${BACKBONE} \
                        --model_name ${MODEL_NAME} \
-                       --gpu 5 6 7 8  \
-                       --train_batch_size 8\
-                       --val_batch_size 4 \
+                       --gpu 2 3 4  \
+                       --train_batch_size 9\
+                       --val_batch_size 3 \
                        --memory_size ${MEMORY_SIZE}\
                        --projector "layer_2" "layer_3" "layer_4"\
                        --data_dir ${DATA_DIR} \
